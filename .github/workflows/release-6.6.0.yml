@@ -45,7 +45,7 @@ jobs:
           APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
         run: |
           set -euo pipefail
-          VERSION_NAME=$(grep -oP 'versionName\\s+"\\K[^"]+' app/build.gradle)
+          VERSION_NAME=$(grep -oP 'versionName\s+"\\K[^"]+' app/build.gradle)
           if [ "$VERSION_NAME" != "6.6.0" ]; then
             echo "Expected app version 6.6.0, found $VERSION_NAME" >&2
             exit 1
@@ -57,7 +57,7 @@ jobs:
           fi
           if gh release view "$TAG" >/dev/null 2>&1; then
             ASSETS=$(gh release view "$TAG" --json assets --jq '.assets[].name')
-            if printf '%s\\n' "$ASSETS" | grep -Fxq "$APK_NAME"; then
+            if printf '%s\n' "$ASSETS" | grep -Fxq "$APK_NAME"; then
               echo "Release $TAG already contains $APK_NAME; leaving it unchanged."
               echo "skip=true" >> "$GITHUB_OUTPUT"
               exit 0
