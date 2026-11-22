@@ -21,8 +21,8 @@ package nabu.iris.keyboard.latin;
  * The original spelling is deliberately not restored: the second press removes one
  * character from the corrected word.
  */
-final class AutocorrectBackspaceState {
-    enum Action {
+public final class AutocorrectBackspaceState {
+    public enum Action {
         DELETE_NORMALLY,
         DELETE_FINAL_CHARACTER
     }
@@ -30,12 +30,12 @@ final class AutocorrectBackspaceState {
     private String correctedWord;
     private boolean separatorRemoved;
 
-    void onCorrectionCommitted(final String word) {
+    public void onCorrectionCommitted(final String word) {
         correctedWord = word;
         separatorRemoved = false;
     }
 
-    Action onBackspace(final String textBeforeCursor, final boolean hasSelection) {
+    public Action onBackspace(final String textBeforeCursor, final boolean hasSelection) {
         if (correctedWord == null || hasSelection) {
             clear();
             return Action.DELETE_NORMALLY;
@@ -60,7 +60,7 @@ final class AutocorrectBackspaceState {
         return Action.DELETE_NORMALLY;
     }
 
-    void clear() {
+    public void clear() {
         correctedWord = null;
         separatorRemoved = false;
     }
