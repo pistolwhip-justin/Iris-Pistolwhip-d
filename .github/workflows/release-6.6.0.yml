@@ -104,6 +104,17 @@ jobs:
           sha256sum Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk > Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
           test -s Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
 
+      - name: Upload APK for direct handoff
+        if: steps.guard.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Iris-Keyboard-Pistolwhipd-v6.6.0
+          path: |
+            release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+            release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Publish immutable GitHub Release
         if: steps.guard.outputs.skip != 'true'
         env:
