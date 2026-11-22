@@ -298,6 +298,11 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction) {
+        // Correct the completed word before inserting the space. Backspace therefore behaves
+        // naturally: the first press removes only that space; the next press edits the word.
+        if (event.mCodePoint == ' ') {
+            mLatinIME.applyAutocorrectBeforeSpace();
+        }
         sendKeyCodePoint(event.mCodePoint);
 
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
