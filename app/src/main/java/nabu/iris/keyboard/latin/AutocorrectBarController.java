@@ -245,8 +245,10 @@ public final class AutocorrectBarController
                     if (!candidates.contains(prefixCandidate)) candidates.add(prefixCandidate);
                 }
 
+                int typoFlags = SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
+                        | SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS;
                 if (mAutoCorrectEnabled
-                        && (attributes & SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO) != 0
+                        && (attributes & typoFlags) != 0
                         && firstSpellSuggestion != null
                         && editDistance(mRequestedWord.toLowerCase(Locale.ROOT),
                                 firstSpellSuggestion.toLowerCase(Locale.ROOT)) <= 2
