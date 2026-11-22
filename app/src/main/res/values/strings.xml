@@ -151,7 +151,7 @@
 
     <!-- About Section -->
     <string name="about_title">About</string>
-    <string name="about_dialog_title">About Iris Keyboard Pistolwhip&#39;d</string>
+    <string name="about_dialog_title">About Iris Keyboard Pistolwhip\u0027d</string>
     <string name="about_developer">Fork maintainer</string>
     <string name="about_developer_name">Pistol Whip Productions</string>
     <string name="about_homeland">Homeland</string>
@@ -163,6 +163,6 @@
     <string name="about_connect_title">Connect</string>
     <string name="about_easter_egg_hint">Tap Homeland or Version for a secret!</string>
     <string name="about_easter_egg_title">Mesopotamia: Cradle of Civilization 🌟</string>
-    <string name="about_easter_egg_message">Iraq is home to the ancient civilizations of Sumer, Akkad, Babylon, and Assyria, where history, writing, the wheel, and the code of laws were born! 📜🏛️\n\nThank you for exploring Iris Keyboard Pistolwhip&#39;d! 🌌✨</string>
+    <string name="about_easter_egg_message">Iraq is home to the ancient civilizations of Sumer, Akkad, Babylon, and Assyria, where history, writing, the wheel, and the code of laws were born! 📜🏛️\n\nThank you for exploring Iris Keyboard Pistolwhip\u0027d! 🌌✨</string>
 </resources>
 
