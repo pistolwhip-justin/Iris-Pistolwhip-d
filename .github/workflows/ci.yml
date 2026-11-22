@@ -33,6 +33,12 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: Prepare runner SDK configuration
+        run: |
+          rm -f local.properties
+          sed -i '/android.aapt2FromMavenOverride/d' gradle.properties
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
       - name: Run unit tests and build APK
         run: ./gradlew --no-daemon testNomlkitDebugUnitTest assembleNomlkitDebug
 
