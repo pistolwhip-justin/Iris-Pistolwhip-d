@@ -73,6 +73,7 @@ public final class AutocorrectBarController
     private boolean mAutoCorrectEnabled = true;
     private boolean mPredictionMode;
     private String mPreviousCommittedWord = "";
+    private int mRequestSequence;
 
     public AutocorrectBarController(Context context, View root,
             CandidateClickListener clickListener, Locale locale) {
@@ -111,7 +112,7 @@ public final class AutocorrectBarController
         try {
             TextServicesManager manager =
                     (TextServicesManager) mContext.getSystemService(Context.TEXT_SERVICES_MANAGER_SERVICE);
-            if (manager != null && manager.isSpellCheckerEnabled()) {
+            if (manager != null && manager.getCurrentSpellCheckerInfo() != null) {
                 mSpellCheckerSession = manager.newSpellCheckerSession(
                         null, locale == null ? Locale.getDefault() : locale, this, true);
             }
@@ -169,7 +170,9 @@ public final class AutocorrectBarController
         showCandidates(candidates);
         if (mSpellCheckerSession != null) {
             try {
-                mSpellCheckerSession.getSentenceSuggestions(new TextInfo[] { new TextInfo(word) }, 5);
+                int sequence = ++mRequestSequence;
+                mSpellCheckerSession.getSentenceSuggestions(
+                        new TextInfo[] { new TextInfo(word, 0, sequence) }, 5);
             } catch (RuntimeException ignored) {
                 // Keep the typed word visible if the system spell checker is unavailable.
             }
@@ -221,7 +224,7 @@ public final class AutocorrectBarController
                 SentenceSuggestionsInfo sentence = results[0];
                 if (sentence.getSuggestionsCount() == 0) return;
                 SuggestionsInfo suggestions = sentence.getSuggestionsInfoAt(0);
-                if (suggestions == null) return;
+                if (suggestions == null || suggestions.getSequence() != mRequestSequence) return;
 
                 ArrayList<String> candidates = new ArrayList<>();
                 candidates.add(mRequestedWord);
@@ -361,6 +364,12 @@ public final class AutocorrectBarController
             current = swap;
         }
         return previous[right.length()];
+    }
+
+    public void setLocale(Locale locale) {
+        openSpellChecker(locale);
+        mRequestedWord = "";
+        mAutoCorrection = null;
     }
 
     private void closeSpellChecker() {
