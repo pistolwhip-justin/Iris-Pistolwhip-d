@@ -34,3 +34,17 @@
 **Decision:** Store custom words and locally learned words in the fork's app preferences. Learn repeatedly used words and word-pair frequencies; provide a manual comma-/line-separated custom-word setting.  
 **Reason:** Preserve the user's custom spelling without requiring a cloud account or AI endpoint.  
 **Status:** Accepted.
+
+## ADR-006 — Fork-owned release and update path
+
+**Date:** 2026-11-22  
+**Decision:** The About screen's GitHub link and release documentation point to this fork. The inherited generic release workflow and upstream F-Droid metadata were removed. No in-app updater was identified in the inspected source tree.  
+**Reason:** The derivative must never direct users to install upstream APKs over or instead of this fork. Versioned GitHub Releases are the canonical update source.  
+**Status:** Accepted.
+
+## ADR-007 — Package-derived GIF provider authority
+
+**Date:** 2026-11-22  
+**Decision:** The manifest provider authority uses the `${applicationId}` placeholder, and GIF content URIs use `Context.getPackageName()`.  
+**Reason:** A separate application ID alone is not enough if a content-provider authority remains hard-coded to upstream; both apps must be able to coexist without provider collisions.  
+**Status:** Accepted.
