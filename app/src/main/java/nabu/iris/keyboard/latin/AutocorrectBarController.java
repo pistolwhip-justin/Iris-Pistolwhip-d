@@ -350,7 +350,21 @@ public final class AutocorrectBarController
                     && !candidates.contains(word)) {
                 candidates.add(word);
             }
-            if (candidates.size() == 2) break;
+            if (candidates.size() == 2) return candidates;
+        }
+
+        String custom = mPreferences.getString(PREF_CUSTOM_WORDS, "");
+        if (!custom.isEmpty()) {
+            String[] customWords = custom.split("[,;\\n\\r]+");
+            for (String entry : customWords) {
+                String word = entry.trim();
+                String normalized = word.toLowerCase(Locale.ROOT);
+                if (normalized.startsWith(normalizedPrefix) && !normalized.equals(normalizedPrefix)
+                        && !candidates.contains(word)) {
+                    candidates.add(word);
+                }
+                if (candidates.size() == 2) break;
+            }
         }
         return candidates;
     }
