@@ -177,9 +177,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: v6.6.0
           APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+          CHECKSUM_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
         run: |
           set -euo pipefail
           TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
           test "$TAG_SHA" = "$GITHUB_SHA"
           gh release view "$TAG" --json assets,url --jq '{url: .url, assets: [.assets[].name]}'
           gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "$APK_NAME"
+          gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "$CHECKSUM_NAME"
