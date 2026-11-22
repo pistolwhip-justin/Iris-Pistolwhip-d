@@ -2,8 +2,8 @@ name: Release 6.6.0
 
 on:
   push:
-    tags:
-      - "v6.6.0"
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -43,18 +43,13 @@ jobs:
         id: guard
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
+          TAG: v6.6.0
           APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
         run: |
           set -euo pipefail
           VERSION_NAME=$(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)
           if [ "$VERSION_NAME" != "6.6.0" ]; then
             echo "Expected app version 6.6.0, found $VERSION_NAME" >&2
-            exit 1
-          fi
-          TAG_COMMIT=$(git rev-parse "$TAG^{commit}")
-          if [ "$TAG_COMMIT" != "$GITHUB_SHA" ]; then
-            echo "Tag $TAG resolves to $TAG_COMMIT, not workflow source $GITHUB_SHA" >&2
             exit 1
           fi
           if gh release view "$TAG" >/dev/null 2>&1; then
@@ -65,6 +60,21 @@ jobs:
               exit 0
             fi
             echo "Release $TAG exists but is incomplete or inconsistent. Refusing to overwrite it." >&2
+            exit 1
+          fi
+          if git rev-parse "$TAG^{commit}" >/dev/null 2>&1; then
+            TAG_COMMIT=$(git rev-parse "$TAG^{commit}")
+            if [ "$TAG_COMMIT" != "$GITHUB_SHA" ]; then
+              echo "Tag $TAG already points to $TAG_COMMIT, not source commit $GITHUB_SHA" >&2
+              exit 1
+            fi
+          else
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+              -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA"
+          fi
+          TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
+          if [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
+            echo "Tag $TAG points to $TAG_SHA, not source commit $GITHUB_SHA" >&2
             exit 1
           fi
           echo "skip=false" >> "$GITHUB_OUTPUT"
@@ -99,7 +109,7 @@ jobs:
         if: steps.guard.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
+          TAG: v6.6.0
           APK: release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
           CHECKSUM: release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
         run: |
@@ -126,7 +136,7 @@ jobs:
         if: steps.guard.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ github.ref_name }}
+          TAG: v6.6.0
           APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
         run: |
           set -euo pipefail
