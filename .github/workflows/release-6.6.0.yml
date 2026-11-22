@@ -31,6 +31,12 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: Prepare runner SDK configuration
+        run: |
+          rm -f local.properties
+          sed -i '/android.aapt2FromMavenOverride/d' gradle.properties
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
       - name: Guard release and verify source version
         id: guard
         env:
@@ -84,20 +90,23 @@ jobs:
           CHECKSUM: release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
         run: |
           set -euo pipefail
-          gh release create "$TAG" "$APK" "$CHECKSUM" \\
-            --title "Iris Keyboard Pistolwhip'd v6.6.0" \\
-            --target "$GITHUB_SHA" \\
-            --notes "## Iris Keyboard Pistolwhip'd v6.6.0
+          cat > release-notes.md <<'EOF'
+          ## Iris Keyboard Pistolwhip'd v6.6.0
 
           - Adds a SwiftKey-style live suggestion strip beneath the Iris utility toolbar.
           - Adds conservative autocorrect on Space, tap-to-replace candidates, local vocabulary learning, and next-word predictions.
           - Adds a manually editable custom-word list.
           - Uses a distinct Android application ID so it installs beside upstream Iris.
 
-          **Install type:** Debug-signed sideload APK (not a Play Store or production-signed release).
-          **Package:** `pro.pistolwhip.iris.keyboard`
-          **Signing note:** This build uses the runner's debug signing identity. A stable signing key must be configured before future releases can update this installation in place.
-          **Device validation:** CI build/test status is reported by this workflow. Physical-device installation, launcher identity, keyboard behavior, and autocorrect acceptance tests remain unverified until exercised on hardware."
+          **Install type:** Debug-signed sideload APK (not a Play Store or production-signed release).  
+          **Package:** pro.pistolwhip.iris.keyboard  
+          **Signing note:** This build uses the runner's debug signing identity. A stable signing key must be configured before future releases can update this installation in place.  
+          **Device validation:** CI build/test status is reported by this workflow. Physical-device installation, launcher identity, keyboard behavior, and autocorrect acceptance tests remain unverified until exercised on hardware.
+          EOF
+          gh release create "$TAG" "$APK" "$CHECKSUM" \
+            --title "Iris Keyboard Pistolwhip'd v6.6.0" \
+            --target "$GITHUB_SHA" \
+            --notes-file release-notes.md
 
       - name: Verify published release and tag
         if: steps.guard.outputs.skip != 'true'
