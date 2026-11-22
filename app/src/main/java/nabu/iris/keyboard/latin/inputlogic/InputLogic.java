@@ -90,6 +90,7 @@ public final class InputLogic {
      * @return the complete transaction object
      */
     public InputTransaction onTextInput(final SettingsValues settingsValues, final Event event) {
+        mLatinIME.clearAutocorrectBackspaceState();
         final String rawText = event.getTextToCommit().toString();
         final InputTransaction inputTransaction = new InputTransaction(settingsValues);
         final String text = performSpecificTldProcessingOnTextInput(rawText);
@@ -289,6 +290,7 @@ public final class InputLogic {
      * @param event The event to handle.
      */
     private void handleNonSeparatorEvent(final Event event) {
+        mLatinIME.clearAutocorrectBackspaceState();
         sendKeyCodePoint(event.mCodePoint);
     }
 
@@ -298,8 +300,9 @@ public final class InputLogic {
      * @param inputTransaction The transaction in progress.
      */
     private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction) {
-        // Correct the completed word before inserting the space. Backspace therefore behaves
-        // naturally: the first press removes only that space; the next press edits the word.
+        mLatinIME.clearAutocorrectBackspaceState();
+        // Correct the completed word before inserting the space. The first Backspace removes
+        // that space; the second removes the final character of the corrected word.
         if (event.mCodePoint == ' ') {
             mLatinIME.applyAutocorrectBeforeSpace();
         }
@@ -325,6 +328,10 @@ public final class InputLogic {
                 event.isKeyRepeat() && mConnection.getExpectedSelectionStart() > 0
                 ? InputTransaction.SHIFT_UPDATE_LATER : InputTransaction.SHIFT_UPDATE_NOW;
         inputTransaction.requireShiftUpdate(shiftUpdateKind);
+
+        if (mLatinIME.handleAutocorrectBackspace()) {
+            return;
+        }
 
         if (mConnection.hasSelection()) {
             mConnection.deleteSelectedText();
