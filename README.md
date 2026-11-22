@@ -95,6 +95,8 @@ app/
   src/main/res/
     layout/input_view.xml
     xml/prefs_screen_preferences.xml
+  src/test/java/nabu/iris/keyboard/latin/
+    AutocorrectBarControllerTest.java
 .github/workflows/
   ci.yml
   release-6.6.0.yml
