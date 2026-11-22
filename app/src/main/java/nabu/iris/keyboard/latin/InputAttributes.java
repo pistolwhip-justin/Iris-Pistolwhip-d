@@ -73,8 +73,6 @@ public final class InputAttributes {
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         final boolean flagNoSuggestions =
                 0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        final boolean flagMultiLine =
-                0 != (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         final boolean flagAutoCorrect =
                 0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
         final boolean flagAutoComplete =
@@ -95,11 +93,12 @@ public final class InputAttributes {
         // If it's a browser edit field and auto correct is not ON explicitly, then
         // disable auto correction, but keep suggestions on.
         // If NO_SUGGESTIONS is set, don't do prediction.
-        // If it's not multiline and the autoCorrect flag is not set, then don't correct
+        // Match mainstream keyboard behavior: ordinary text fields receive autocorrect
+        // unless the app explicitly suppresses suggestions. Browser edit fields retain the
+        // platform's explicit opt-in requirement.
         mInputTypeNoAutoCorrect =
                 (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
-                || flagNoSuggestions
-                || (!flagAutoCorrect && !flagMultiLine);
+                || flagNoSuggestions;
 
         mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
     }

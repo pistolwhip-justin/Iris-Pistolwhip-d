@@ -69,7 +69,7 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
             public boolean onPreferenceClick(Preference preference) {
                 new android.app.AlertDialog.Builder(getActivity())
                         .setTitle(R.string.privacy_policy)
-                        .setMessage("Iris Keyboard respects your privacy. All keystrokes, personal dictionary entries, and soundpacks are processed completely on your device.\n\nOptional cloud AI tools only send the specific prompt you submit when explicitly triggered.")
+                        .setMessage("Your personal vocabulary and learned word-pair data are stored on this device. Spelling suggestions are requested from the Android spell-checker service selected in system settings; that separate service may have its own data handling and network behavior.\n\nOptional cloud AI tools only send the specific prompt you submit when explicitly triggered.")
                         .setPositiveButton(android.R.string.ok, null)
                         .show();
                 return true;
@@ -351,13 +351,13 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
         applyActionButtonStyle(websiteBtn, cardStroke, accentColor);
         
         if (githubBtn != null) {
-            githubBtn.setOnClickListener(v -> openUrl("https://github.com/MohamadOday"));
+            githubBtn.setOnClickListener(v -> openUrl("https://github.com/pistolwhip-justin/Iris-Pistolwhip-d"));
         }
         if (telegramBtn != null) {
             telegramBtn.setOnClickListener(v -> openUrl("https://t.me/bn3di"));
         }
         if (websiteBtn != null) {
-            websiteBtn.setOnClickListener(v -> openUrl("https://bn3di.is-a.dev"));
+            websiteBtn.setOnClickListener(v -> openUrl("https://pistolwhip.pro"));
         }
         
         // Easter Egg: Tap version chip 5 times

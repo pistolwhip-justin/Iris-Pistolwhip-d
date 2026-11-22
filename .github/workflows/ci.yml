@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test NoMlKit debug variant
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Prepare runner SDK configuration
+        run: |
+          rm -f local.properties
+          sed -i '/android.aapt2FromMavenOverride/d' gradle.properties
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Run unit tests and build APK
+        run: ./gradlew --no-daemon testNomlkitDebugUnitTest assembleNomlkitDebug
+
+      - name: Verify unit test report
+        run: |
+          python3 - <<'PY'
+          import glob
+          import sys
+          import xml.etree.ElementTree as ET
+
+          reports = glob.glob("app/build/test-results/testNomlkitDebugUnitTest/TEST-*.xml")
+          if not reports:
+              sys.exit("No JUnit XML report was produced.")
+          totals = {"tests": 0, "failures": 0, "errors": 0, "skipped": 0}
+          for report in reports:
+              root = ET.parse(report).getroot()
+              for key in totals:
+                  totals[key] += int(root.attrib.get(key, 0))
+          print("JUnit results:", totals)
+          if totals["tests"] < 1 or totals["failures"] or totals["errors"]:
+              sys.exit("Unit test verification failed.")
+          PY
+
+      - name: Verify APK output and side-by-side identity
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/nomlkit/debug/app-nomlkit-debug.apk
+          test -s "$APK"
+          AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
+          BADGING=$("$AAPT" dump badging "$APK")
+          printf '%s\n' "$BADGING" | grep -F "package: name='pro.pistolwhip.iris.keyboard'"
+          printf '%s\n' "$BADGING" | grep -F "Iris Keyboard Pistolwhip'd"
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml | grep -F "pro.pistolwhip.iris.keyboard.gifprovider"

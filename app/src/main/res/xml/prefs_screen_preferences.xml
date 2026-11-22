@@ -48,6 +48,26 @@
             android:defaultValue="false" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Autocorrect &amp; Learning">
+        <SwitchPreference
+            android:key="pref_autocorrect_enabled"
+            android:title="@string/pref_autocorrect_enabled"
+            android:summary="@string/pref_autocorrect_enabled_summary"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:key="pref_autocorrect_learning_enabled"
+            android:title="@string/pref_autocorrect_learning_enabled"
+            android:summary="@string/pref_autocorrect_learning_enabled_summary"
+            android:defaultValue="true" />
+        <EditTextPreference
+            android:key="pref_autocorrect_custom_words"
+            android:title="@string/pref_autocorrect_custom_words"
+            android:summary="@string/pref_autocorrect_custom_words_summary"
+            android:defaultValue=""
+            android:dialogTitle="@string/pref_autocorrect_custom_words"
+            android:inputType="textMultiLine" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Gestures &amp; Swiping">
         <SwitchPreference
             android:key="pref_space_swipe"

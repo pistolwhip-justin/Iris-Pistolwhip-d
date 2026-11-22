@@ -99,6 +99,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private ClipboardHistoryManager mClipboardHistoryManager;
     private ClipboardBarController mClipboardBarController;
+    private AutocorrectBarController mAutocorrectBarController;
     private android.content.ClipboardManager.OnPrimaryClipChangedListener mClipboardListener;
 
     public final UIHandler mHandler = new UIHandler(this);
@@ -318,6 +319,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mClipboardBarController.onDestroy();
             mClipboardBarController = null;
         }
+        if (mAutocorrectBarController != null) {
+            mAutocorrectBarController.destroy();
+            mAutocorrectBarController = null;
+        }
         super.onDestroy();
     }
 
@@ -396,6 +401,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mClipboardBarController.hide();
             }
         });
+        if (mAutocorrectBarController != null) {
+            mAutocorrectBarController.destroy();
+        }
+        mAutocorrectBarController = new AutocorrectBarController(this, view,
+                new AutocorrectBarController.CandidateClickListener() {
+                    @Override
+                    public void onCandidateSelected(String candidate, boolean isPrediction) {
+                        applyAutocorrectCandidate(candidate, isPrediction);
+                    }
+                }, getCurrentLayoutLocale());
+        refreshAutocorrectSuggestions();
     }
 
     @Override
@@ -428,6 +444,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onCurrentSubtypeChanged() {
         mInputLogic.onSubtypeChanged();
+        if (mAutocorrectBarController != null) {
+            mAutocorrectBarController.setLocale(getCurrentLayoutLocale());
+        }
         loadKeyboard();
     }
 
@@ -530,6 +549,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mClipboardBarController.applyTheming();
             mClipboardBarController.checkAndShowClipboardSuggestion();
         }
+        refreshAutocorrectSuggestions();
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -601,6 +621,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
         }
+        refreshAutocorrectSuggestions();
     }
 
     @Override
@@ -844,6 +865,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event);
         updateStateAfterInputTransaction(completeInputTransaction);
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+        refreshAutocorrectSuggestions();
     }
 
     // A helper method to split the code point and the key code. Ultimately, they should not be
@@ -876,6 +898,72 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.onTextInput(mSettings.getCurrent(), event);
         updateStateAfterInputTransaction(completeInputTransaction);
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+        refreshAutocorrectSuggestions();
+    }
+
+
+    /**
+     * Applies a cached high-confidence correction before a separating space is committed.
+     * The normal backspace path then removes the inserted space first and edits the word next.
+     */
+    public void applyAutocorrectBeforeSpace() {
+        if (mAutocorrectBarController == null || mSettings.getCurrent() == null) return;
+        SettingsValues values = mSettings.getCurrent();
+        if (!values.mInputAttributes.mShouldShowSuggestions
+                || values.mInputAttributes.mInputTypeNoAutoCorrect) return;
+
+        String before = mInputLogic.mConnection.getTextBeforeCursor();
+        String word = getLastTypedWord(before);
+        if (word.isEmpty()) return;
+
+        String correction = mAutocorrectBarController.getAutoCorrection(word);
+        if (correction != null && !correction.equalsIgnoreCase(word)) {
+            mInputLogic.mConnection.deleteTextBeforeCursor(word.length());
+            mInputLogic.mConnection.commitText(correction, 1);
+            mAutocorrectBarController.recordCommittedWord(correction);
+        } else {
+            mAutocorrectBarController.recordCommittedWord(word);
+        }
+    }
+
+    private void applyAutocorrectCandidate(String candidate, boolean isPrediction) {
+        if (candidate == null || candidate.trim().isEmpty()) return;
+        if (!isPrediction) {
+            String word = getLastTypedWord(mInputLogic.mConnection.getTextBeforeCursor());
+            if (!word.isEmpty()) {
+                mInputLogic.mConnection.deleteTextBeforeCursor(word.length());
+            }
+        }
+        // A next-word prediction follows an existing separator, so commit its trailing
+        // space as SwiftKey-style candidate selection does.
+        mInputLogic.mConnection.commitText(isPrediction ? candidate + " " : candidate, 1);
+        if (mAutocorrectBarController != null) {
+            mAutocorrectBarController.recordCommittedWord(candidate);
+        }
+        refreshAutocorrectSuggestions();
+    }
+
+    private void refreshAutocorrectSuggestions() {
+        if (mAutocorrectBarController == null) return;
+        SettingsValues values = mSettings.getCurrent();
+        if (values == null || values.mInputAttributes == null) return;
+        mAutocorrectBarController.refresh(
+                mInputLogic.mConnection.getTextBeforeCursor(),
+                values.mInputAttributes.mShouldShowSuggestions,
+                !values.mInputAttributes.mInputTypeNoAutoCorrect);
+    }
+
+    private static String getLastTypedWord(String text) {
+        if (text == null || text.isEmpty()) return "";
+        int start = text.length();
+        while (start > 0) {
+            int codePoint = text.codePointBefore(start);
+            if (!Character.isLetterOrDigit(codePoint) && codePoint != '\'' && codePoint != 0x2019) {
+                break;
+            }
+            start -= Character.charCount(codePoint);
+        }
+        return text.substring(start);
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface

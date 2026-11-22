@@ -1,0 +1,187 @@
+name: Release 6.6.0
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish Iris Keyboard Pistolwhip'd 6.6.0
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the source commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Prepare runner SDK configuration
+        run: |
+          rm -f local.properties
+          sed -i '/android.aapt2FromMavenOverride/d' gradle.properties
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Guard release and verify source version
+        id: guard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: v6.6.0
+          APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+        run: |
+          set -euo pipefail
+          VERSION_NAME=$(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)
+          if [ "$VERSION_NAME" != "6.6.0" ]; then
+            echo "Expected app version 6.6.0, found $VERSION_NAME" >&2
+            exit 1
+          fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            ASSETS=$(gh release view "$TAG" --json assets --jq '.assets[].name')
+            if printf '%s\n' "$ASSETS" | grep -Fxq "$APK_NAME"; then
+              RELEASE_BODY=$(gh release view "$TAG" --json body --jq '.body')
+              RELEASE_SOURCE_SHA=$(printf '%s\n' "$RELEASE_BODY" | sed -n 's/^\*\*Source commit:\*\* \([0-9a-f]\{40\}\)[[:space:]]*$/\1/p')
+              TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
+              if [ -z "$RELEASE_SOURCE_SHA" ] || [ "$TAG_SHA" != "$RELEASE_SOURCE_SHA" ]; then
+                echo "Existing release $TAG has an inconsistent tag/source commit." >&2
+                exit 1
+              fi
+              echo "Release $TAG already contains $APK_NAME for source $TAG_SHA; leaving it unchanged."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Release $TAG exists but is incomplete or inconsistent. Refusing to overwrite it." >&2
+            exit 1
+          fi
+          if TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha' 2>/dev/null); then
+            if [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
+              echo "Tag $TAG already points to $TAG_SHA, not source commit $GITHUB_SHA" >&2
+              exit 1
+            fi
+          else
+            gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+              -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA"
+            TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
+            if [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
+              echo "Tag $TAG points to $TAG_SHA, not source commit $GITHUB_SHA" >&2
+              exit 1
+            fi
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Run unit tests and build NoMlKit APK
+        if: steps.guard.outputs.skip != 'true'
+        run: ./gradlew --no-daemon testNomlkitDebugUnitTest assembleNomlkitDebug
+
+      - name: Verify unit test report
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          python3 - <<'PY'
+          import glob
+          import sys
+          import xml.etree.ElementTree as ET
+
+          reports = glob.glob("app/build/test-results/testNomlkitDebugUnitTest/TEST-*.xml")
+          if not reports:
+              sys.exit("No JUnit XML report was produced.")
+          totals = {"tests": 0, "failures": 0, "errors": 0, "skipped": 0}
+          for report in reports:
+              root = ET.parse(report).getroot()
+              for key in totals:
+                  totals[key] += int(root.attrib.get(key, 0))
+          print("JUnit results:", totals)
+          if totals["tests"] < 1 or totals["failures"] or totals["errors"]:
+              sys.exit("Unit test verification failed.")
+          PY
+
+      - name: Verify APK package, visible label, and provider authority
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/nomlkit/debug/app-nomlkit-debug.apk
+          test -s "$APK"
+          AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
+          BADGING=$("$AAPT" dump badging "$APK")
+          printf '%s\n' "$BADGING" | grep -F "package: name='pro.pistolwhip.iris.keyboard' versionCode='155' versionName='6.6.0'"
+          printf '%s\n' "$BADGING" | grep -F "Iris Keyboard Pistolwhip'd"
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml | grep -F "pro.pistolwhip.iris.keyboard.gifprovider"
+
+      - name: Prepare versioned APK and checksum
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          cp app/build/outputs/apk/nomlkit/debug/app-nomlkit-debug.apk release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+          cd release
+          sha256sum Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk > Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
+          test -s Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+
+      - name: Upload APK for direct handoff
+        if: steps.guard.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Iris-Keyboard-Pistolwhipd-v6.6.0
+          path: |
+            release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+            release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Publish immutable GitHub Release
+        if: steps.guard.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: v6.6.0
+          APK: release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+          CHECKSUM: release/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<EOF
+          ## Iris Keyboard Pistolwhip'd v6.6.0
+
+          - Adds a SwiftKey-style live suggestion strip beneath the Iris utility toolbar.
+          - Adds conservative autocorrect on Space, tap-to-replace candidates, local vocabulary learning, and next-word predictions.
+          - Adds a manually editable custom-word list.
+          - Uses a distinct Android application ID so it installs beside upstream Iris.
+
+          **Install type:** Debug-signed sideload APK (not a Play Store or production-signed release).  
+          **Package:** pro.pistolwhip.iris.keyboard
+          **Source commit:** $GITHUB_SHA
+          **Signing note:** This build uses the runner's debug signing identity. A stable signing key must be configured before future releases can update this installation in place.  
+          **Device validation:** CI build/test status is reported by this workflow. Physical-device installation, launcher identity, keyboard behavior, and autocorrect acceptance tests remain unverified until exercised on hardware.
+          EOF
+          gh release create "$TAG" "$APK" "$CHECKSUM" \
+            --title "Iris Keyboard Pistolwhip'd v6.6.0" \
+            --target "$GITHUB_SHA" \
+            --notes-file release-notes.md
+
+      - name: Verify published release and tag
+        if: steps.guard.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: v6.6.0
+          APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
+          CHECKSUM_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256
+        run: |
+          set -euo pipefail
+          TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
+          test "$TAG_SHA" = "$GITHUB_SHA"
+          gh release view "$TAG" --json assets,url --jq '{url: .url, assets: [.assets[].name]}'
+          gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "$APK_NAME"
+          gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "$CHECKSUM_NAME"

@@ -520,7 +520,7 @@ public final class GifPanelHelper {
                 return;
             }
             
-            android.net.Uri contentUri = android.net.Uri.parse("content://nabu.iris.keyboard.gifprovider/" + file.getName());
+            android.net.Uri contentUri = android.net.Uri.parse("content://" + mContext.getPackageName() + ".gifprovider/" + file.getName());
             
             android.view.inputmethod.InputContentInfo contentInfo = new android.view.inputmethod.InputContentInfo(
                 contentUri,

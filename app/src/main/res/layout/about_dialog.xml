@@ -45,7 +45,7 @@
                 android:id="@+id/about_version_chip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="v6.5.3 • Open Source"
+                android:text="v6.6.0 • Open Source"
                 android:textColor="@color/settings_accent"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -101,7 +101,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="100% Offline"
+                    android:text="Local Data"
                     android:textColor="@color/settings_text_secondary"
                     android:textSize="10.5sp" />
             </LinearLayout>
@@ -179,7 +179,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DEVELOPED BY"
+                android:text="FORK MAINTAINED BY"
                 android:textColor="@color/settings_accent"
                 android:textSize="11sp"
                 android:textStyle="bold"
@@ -189,11 +189,19 @@
                 android:id="@+id/about_dev_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mohamad Oday"
+                android:text="Pistol Whip Productions"
                 android:textColor="@color/settings_text_primary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fork of Iris Keyboard by Mohamad Oday"
+                android:textColor="@color/settings_text_secondary"
+                android:textSize="11sp"
                 android:layout_marginBottom="14dp" />
 
             <LinearLayout
