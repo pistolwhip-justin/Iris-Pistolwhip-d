@@ -80,7 +80,7 @@ The NoMlKit variant avoids the optional proprietary ML Kit translation dependenc
 
 `app/build/outputs/apk/nomlkit/debug/`
 
-A version-specific GitHub Actions workflow is configured to build and publish the APK to GitHub Releases after its matching version tag is pushed. The first workflow run and release are still pending verification. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
+A version-specific GitHub Actions workflow is configured to run when the 6.6.0 changes land on `main`. It creates `v6.6.0` on that exact source commit, builds the APK, and publishes it to GitHub Releases. The first release is still pending verification. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
 
 ## 🧭 Project structure
 
