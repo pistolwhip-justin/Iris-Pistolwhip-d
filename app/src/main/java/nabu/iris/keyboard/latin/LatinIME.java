@@ -934,7 +934,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.mConnection.deleteTextBeforeCursor(word.length());
             }
         }
-        mInputLogic.mConnection.commitText(candidate, 1);
+        // A next-word prediction follows an existing separator, so commit its trailing
+        // space as SwiftKey-style candidate selection does.
+        mInputLogic.mConnection.commitText(isPrediction ? candidate + " " : candidate, 1);
         if (mAutocorrectBarController != null) {
             mAutocorrectBarController.recordCommittedWord(candidate);
         }
