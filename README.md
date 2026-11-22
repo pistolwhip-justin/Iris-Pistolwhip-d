@@ -39,7 +39,7 @@ Iris already brings a useful foundation: clipboard history, an optional AI toolb
 - **Tap-to-replace** candidates while typing.
 - **Next-word suggestions** based on locally learned word pairs.
 - **Automatic vocabulary learning** after repeated use, plus a custom-word list you can maintain yourself.
-- **Natural backspace behavior:** after an automatic correction inserts a space, Backspace once removes only that space; Backspace again removes the last letter of the corrected word. No separate undo control.
+- **Natural backspace behavior:** after an automatic correction inserts a space, Backspace once removes only that space; Backspace again removes the final character of the corrected word. The original misspelling is not restored, and there is no separate undo control.
 
 ### 🧰 Iris features retained
 
