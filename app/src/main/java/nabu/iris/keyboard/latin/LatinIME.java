@@ -64,6 +64,7 @@ import nabu.iris.keyboard.keyboard.MainKeyboardView;
 import nabu.iris.keyboard.latin.common.Constants;
 import nabu.iris.keyboard.latin.define.DebugFlags;
 import nabu.iris.keyboard.latin.inputlogic.InputLogic;
+import nabu.iris.keyboard.latin.inputlogic.AutocorrectBackspaceState;
 import nabu.iris.keyboard.latin.settings.Settings;
 import nabu.iris.keyboard.latin.settings.SettingsActivity;
 import nabu.iris.keyboard.latin.settings.SettingsValues;
