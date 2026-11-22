@@ -71,10 +71,10 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 
 ## Current implementation status
 
-- **Source commit:** `057a1c68d2c0f58c044c2d64ef75fe8cb139e0be`
-- **Release:** [v6.6.0](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0)
+- **Original source commit:** `057a1c68d2c0f58c044c2d64ef75fe8cb139e0be` (v6.6.0); v6.6.1 source commit is recorded in its release notes.
+- **Latest release:** [v6.6.1](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1) (prior release: [v6.6.0](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0))
 - **Tag:** `v6.6.0` points to the exact release source commit.
-- **Build/tests:** NoMlKit debug APK built successfully; 4 JUnit tests passed with zero failures/errors.
+- **Build/tests:** NoMlKit debug APK built successfully; 8 JUnit tests passed with zero failures/errors.
 - **Identity:** CI verified package `pro.pistolwhip.iris.keyboard`, label `Iris Keyboard Pistolwhip'd`, and provider authority `pro.pistolwhip.iris.keyboard.gifprovider`.
 - **Artifact:** APK and SHA-256 were retrieved from the successful release workflow artifact; checksum verification passed.
 - **Not yet verified:** Physical installation beside upstream Iris, keyboard selection, live suggestions/corrections, custom vocabulary behavior, and the two-press backspace sequence on target hardware.
