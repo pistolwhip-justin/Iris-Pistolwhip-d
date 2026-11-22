@@ -27,6 +27,8 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 
 ### Phase 1 — Fork identity and reproducible build
 
+**Status:** CI identity checks passed; physical side-by-side installation remains unverified.
+
 **Deliverables**
 - Distinct application ID, app label, and provider authority.
 - Derivative-owned release documentation and GitHub Actions build.
@@ -38,6 +40,8 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 - Side-by-side installation is confirmed on a physical Android device.
 
 ### Phase 2 — Typing engine and candidate strip
+
+**Status:** Implementation builds; 4 JUnit tests pass. Real-device typing acceptance remains unverified.
 
 **Deliverables**
 - Candidate strip between utility toolbar and keys.
@@ -53,6 +57,8 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 
 ### Phase 3 — Release and device acceptance
 
+**Status:** v6.6.0 is published; physical-device acceptance remains pending.
+
 **Deliverables**
 - Versioned APK release workflow and release notes.
 - Updated README and known-limitations record.
@@ -65,4 +71,10 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 
 ## Current implementation status
 
-The branch contains the first implementation of the candidate strip, Android spell-checker integration, local learning, custom vocabulary preference, app identity separation, and release/CI setup. No APK is considered available until GitHub Actions has built it successfully and the release asset has been verified. Physical-device behavior remains unverified until installed and exercised on target hardware.
+- **Source commit:** `057a1c68d2c0f58c044c2d64ef75fe8cb139e0be`
+- **Release:** [v6.6.0](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0)
+- **Tag:** `v6.6.0` points to the exact release source commit.
+- **Build/tests:** NoMlKit debug APK built successfully; 4 JUnit tests passed with zero failures/errors.
+- **Identity:** CI verified package `pro.pistolwhip.iris.keyboard`, label `Iris Keyboard Pistolwhip'd`, and provider authority `pro.pistolwhip.iris.keyboard.gifprovider`.
+- **Artifact:** APK and SHA-256 were retrieved from the successful release workflow artifact; checksum verification passed.
+- **Not yet verified:** Physical installation beside upstream Iris, keyboard selection, live suggestions/corrections, custom vocabulary behavior, and backspace acceptance on target hardware.
