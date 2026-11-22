@@ -72,7 +72,7 @@
 
         <provider
             android:name=".latin.GifProvider"
-            android:authorities="pro.pistolwhip.iris.keyboard.gifprovider"
+            android:authorities="${applicationId}.gifprovider"
             android:exported="false"
             android:grantUriPermissions="true" />
     </application>
