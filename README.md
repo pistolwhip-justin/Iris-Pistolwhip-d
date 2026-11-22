@@ -58,7 +58,7 @@ The system-visible app name is **Iris Keyboard Pistolwhip'd**, so it is distingu
 3. Open Android's keyboard settings, enable **Iris Keyboard Pistolwhip'd**, and select it as the active keyboard.
 4. Open the fork's settings and configure **Autocorrect & Learning**.
 
-The first release is a debug-signed sideload build. It is suitable for installation/testing, not a Play Store or production-signed release. A stable release-signing key will be needed if future APKs must update this installation without reinstalling.
+The planned first release is a debug-signed sideload build. It is intended for installation/testing, not a Play Store or production-signed release. A stable release-signing key will be needed if future APKs must update this installation without reinstalling.
 
 ## 🛠️ Build from source
 
@@ -80,7 +80,7 @@ The NoMlKit variant avoids the optional proprietary ML Kit translation dependenc
 
 `app/build/outputs/apk/nomlkit/debug/`
 
-GitHub Actions performs the reproducible build and publishes versioned APKs to GitHub Releases. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
+A version-specific GitHub Actions workflow is configured to build and publish the APK to GitHub Releases after its matching version tag is pushed. The first workflow run and release are still pending verification. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
 
 ## 🧭 Project structure
 
