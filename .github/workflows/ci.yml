@@ -44,5 +44,13 @@ jobs:
       - name: Run unit tests and build APK
         run: ./gradlew --no-daemon testNomlkitDebugUnitTest assembleNomlkitDebug
 
-      - name: Verify APK output exists
-        run: test -s app/build/outputs/apk/nomlkit/debug/app-nomlkit-debug.apk
+      - name: Verify APK output and side-by-side identity
+        run: |
+          set -euo pipefail
+          APK=app/build/outputs/apk/nomlkit/debug/app-nomlkit-debug.apk
+          test -s "$APK"
+          AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
+          BADGING=$("$AAPT" dump badging "$APK")
+          printf '%s\\n' "$BADGING" | grep -F "package: name='pro.pistolwhip.iris.keyboard'"
+          printf '%s\\n' "$BADGING" | grep -F "Iris Keyboard Pistolwhip'd"
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml | grep -F "pro.pistolwhip.iris.keyboard.gifprovider"
