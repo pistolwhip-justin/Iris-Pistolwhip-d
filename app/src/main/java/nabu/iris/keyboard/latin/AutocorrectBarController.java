@@ -223,18 +223,13 @@ public final class AutocorrectBarController
                     return;
                 }
                 SentenceSuggestionsInfo sentence = results[0];
-                if (sentence.getSuggestionsCount() == 0) {
-                    ArrayList<String> fallback = new ArrayList<>();
-                    fallback.add(mRequestedWord);
-                    fallback.addAll(getPrefixCandidates(mRequestedWord));
-                    showCandidates(fallback);
-                    return;
-                }
+                if (sentence.getSuggestionsCount() == 0) return;
                 SuggestionsInfo suggestions = sentence.getSuggestionsInfoAt(0);
                 if (suggestions == null || suggestions.getSequence() != mRequestSequence) return;
 
                 ArrayList<String> candidates = new ArrayList<>();
                 candidates.add(mRequestedWord);
+                String firstSpellSuggestion = null;
                 int attributes = suggestions.getSuggestionsAttributes();
                 for (int i = 0; i < suggestions.getSuggestionsCount(); i++) {
                     String suggestion = suggestions.getSuggestionAt(i);
@@ -244,6 +239,7 @@ public final class AutocorrectBarController
                         continue;
                     }
                     if (!candidates.contains(suggestion)) candidates.add(suggestion);
+                    if (firstSpellSuggestion == null) firstSpellSuggestion = suggestion;
                 }
 
                 for (String prefixCandidate : getPrefixCandidates(mRequestedWord)) {
@@ -252,11 +248,11 @@ public final class AutocorrectBarController
 
                 if (mAutoCorrectEnabled
                         && (attributes & SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO) != 0
-                        && candidates.size() > 1
+                        && firstSpellSuggestion != null
                         && editDistance(mRequestedWord.toLowerCase(Locale.ROOT),
-                                candidates.get(1).toLowerCase(Locale.ROOT)) <= 2
+                                firstSpellSuggestion.toLowerCase(Locale.ROOT)) <= 2
                         && !startsWithUppercase(mRequestedWord)) {
-                    mAutoCorrection = candidates.get(1);
+                    mAutoCorrection = firstSpellSuggestion;
                 } else {
                     mAutoCorrection = null;
                 }
