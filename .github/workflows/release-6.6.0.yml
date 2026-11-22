@@ -47,7 +47,7 @@ jobs:
           APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
         run: |
           set -euo pipefail
-          VERSION_NAME=$(grep -oP 'versionName\s+"\\K[^"]+' app/build.gradle)
+          VERSION_NAME=$(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)
           if [ "$VERSION_NAME" != "6.6.0" ]; then
             echo "Expected app version 6.6.0, found $VERSION_NAME" >&2
             exit 1
