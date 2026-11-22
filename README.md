@@ -10,6 +10,22 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 ---
 
+## 📦 Current release — v6.6.0
+
+<badge color="success">Published</badge>
+
+- [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0)
+- [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.0/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk)
+- [SHA-256 checksum file](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.0/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256)
+
+**Package:** `pro.pistolwhip.iris.keyboard`  
+**Version code:** `155`  
+**SHA-256:** `1c82ed5e9f286cfdb4f57f1d9ca8d106687e3617feb89c12e6a9774e83bbaac0`
+
+This is a debug-signed sideload build. CI verified the distinct package ID, visible app label, and GIF provider authority. The APK and checksum were downloaded from the release workflow artifact and the checksum passed local verification. Physical-device installation and typing behavior still need a real-device test.
+
+---
+
 ## 🎯 Why this fork exists
 
 Iris already brings a useful foundation: clipboard history, an optional AI toolbar, theming, layout controls, and a compact keyboard. The missing piece for my daily use was a proper typing engine. This fork adds that without turning ordinary typing into an AI/API call.
@@ -58,7 +74,7 @@ The system-visible app name is **Iris Keyboard Pistolwhip'd**, so it is distingu
 3. Open Android's keyboard settings, enable **Iris Keyboard Pistolwhip'd**, and select it as the active keyboard.
 4. Open the fork's settings and configure **Autocorrect & Learning**.
 
-The planned first release is a debug-signed sideload build. It is intended for installation/testing, not a Play Store or production-signed release. A stable release-signing key will be needed if future APKs must update this installation without reinstalling.
+The v6.6.0 release is a debug-signed sideload build. It is intended for installation/testing, not a Play Store or production-signed release. A stable release-signing key will be needed if future APKs must update this installation without reinstalling.
 
 ## 🛠️ Build from source
 
@@ -80,7 +96,7 @@ The NoMlKit variant avoids the optional proprietary ML Kit translation dependenc
 
 `app/build/outputs/apk/nomlkit/debug/`
 
-A version-specific GitHub Actions workflow is configured to run when the 6.6.0 changes land on `main`. It creates `v6.6.0` on that exact source commit, builds the APK, and publishes it to GitHub Releases. The first release is still pending verification. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
+The version-specific GitHub Actions workflow creates a version tag on the exact `main` commit, builds the APK, and publishes immutable GitHub Release assets. v6.6.0 is published; future releases use their own version-specific workflow and tag. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
 
 ## 🧭 Project structure
 
