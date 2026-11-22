@@ -73,8 +73,6 @@ public final class InputAttributes {
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         final boolean flagNoSuggestions =
                 0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        final boolean flagMultiLine =
-                0 != (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         final boolean flagAutoCorrect =
                 0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
         final boolean flagAutoComplete =
