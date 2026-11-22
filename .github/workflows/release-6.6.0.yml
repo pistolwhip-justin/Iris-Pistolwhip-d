@@ -90,6 +90,7 @@ jobs:
         run: ./gradlew --no-daemon testNomlkitDebugUnitTest assembleNomlkitDebug
 
       - name: Verify unit test report
+        if: steps.guard.outputs.skip != 'true'
         run: |
           python3 - <<'PY'
           import glob
