@@ -45,6 +45,12 @@
     <string name="auto_cap">Auto-capitalization</string>
     <!-- Description for option to enable auto capitalization of sentences -->
     <string name="auto_cap_summary">Capitalize the first word of each sentence</string>
+    <string name="pref_autocorrect_enabled">Automatic corrections and suggestions</string>
+    <string name="pref_autocorrect_enabled_summary">Show live word suggestions and automatically correct likely typos when you press space</string>
+    <string name="pref_autocorrect_learning_enabled">Learn my typing</string>
+    <string name="pref_autocorrect_learning_enabled_summary">Learn words you use repeatedly and remember common word pairs on this device</string>
+    <string name="pref_autocorrect_custom_words">My custom words</string>
+    <string name="pref_autocorrect_custom_words_summary">Comma- or line-separated words the keyboard should keep as typed</string>
 
     <!-- Preference for input language selection -->
     <string name="select_language">Languages</string>
