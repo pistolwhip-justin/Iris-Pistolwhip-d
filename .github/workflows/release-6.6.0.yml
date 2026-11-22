@@ -13,7 +13,7 @@ jobs:
     name: Build and publish Iris Keyboard Pistolwhip'd 6.6.0
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the exact tagged source
+      - name: Check out the source commit
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -62,20 +62,19 @@ jobs:
             echo "Release $TAG exists but is incomplete or inconsistent. Refusing to overwrite it." >&2
             exit 1
           fi
-          if git rev-parse "$TAG^{commit}" >/dev/null 2>&1; then
-            TAG_COMMIT=$(git rev-parse "$TAG^{commit}")
-            if [ "$TAG_COMMIT" != "$GITHUB_SHA" ]; then
-              echo "Tag $TAG already points to $TAG_COMMIT, not source commit $GITHUB_SHA" >&2
+          if TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha' 2>/dev/null); then
+            if [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
+              echo "Tag $TAG already points to $TAG_SHA, not source commit $GITHUB_SHA" >&2
               exit 1
             fi
           else
             gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
               -f ref="refs/tags/$TAG" -f sha="$GITHUB_SHA"
-          fi
-          TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
-          if [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
-            echo "Tag $TAG points to $TAG_SHA, not source commit $GITHUB_SHA" >&2
-            exit 1
+            TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
+            if [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
+              echo "Tag $TAG points to $TAG_SHA, not source commit $GITHUB_SHA" >&2
+              exit 1
+            fi
           fi
           echo "skip=false" >> "$GITHUB_OUTPUT"
 
@@ -140,6 +139,7 @@ jobs:
           APK_NAME: Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk
         run: |
           set -euo pipefail
-          test "$(git rev-parse "$TAG^{commit}")" = "$GITHUB_SHA"
+          TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
+          test "$TAG_SHA" = "$GITHUB_SHA"
           gh release view "$TAG" --json assets,url --jq '{url: .url, assets: [.assets[].name]}'
           gh release view "$TAG" --json assets --jq '.assets[].name' | grep -Fx "$APK_NAME"
