@@ -1,136 +1,125 @@
-<div align="center">
-  <img src="fastlane/metadata/android/en-US/images/icon.png" width="96" height="96" alt="Iris Keyboard Icon" />
-  <h1>Iris Keyboard</h1>
-  <p>A fast, private, and highly customizable Android keyboard based on AOSP / Simple Keyboard.</p>
+# ⌨️ Iris Keyboard Pistolwhip'd
 
-  <p>
-    <a href="https://github.com/MohamadOday/Iris/releases"><img src="https://img.shields.io/github/v/release/MohamadOday/Iris?color=blue&style=flat-square" alt="Release" /></a>
-    <a href="https://f-droid.org/packages/nabu.iris.keyboard/"><img src="https://img.shields.io/badge/F--Droid-Available-3DDC84?style=flat-square&logo=fdroid&logoColor=white" alt="F-Droid" /></a>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-orange?style=flat-square" alt="License" /></a>
-    <a href="https://github.com/MohamadOday/Iris/releases"><img src="https://img.shields.io/badge/Android-7.0%2B-green?style=flat-square&logo=android&logoColor=white" alt="Android" /></a>
-    <a href="app/build.gradle"><img src="https://img.shields.io/badge/Target_SDK-36-blueviolet?style=flat-square" alt="Target SDK" /></a>
-  </p>
-</div>
+![Project](https://img.shields.io/badge/Android-Keyboard-3DDC84?style=flat-square&logo=android&logoColor=white) ![Release](https://img.shields.io/github/v/release/pistolwhip-justin/Iris-Pistolwhip-d?style=flat-square) ![License](https://img.shields.io/github/license/pistolwhip-justin/Iris-Pistolwhip-d?style=flat-square) ![Maintained](https://img.shields.io/badge/maintained-yes-green?style=flat-square)
+
+**Iris Keyboard Pistolwhip'd** is my working fork of [Iris Keyboard](https://github.com/MohamadOday/Iris), itself based on AOSP / [Simple Keyboard](https://github.com/rkkr/simple-keyboard). It keeps the Iris features worth keeping and adds the typing behavior I expect from a modern keyboard—without replacing the whole project with a different app.
+
+The immediate mission: make autocorrect actually behave like a keyboard should. Suggestions while typing, sensible automatic corrections, and a vocabulary that learns the words I actually use.
+
+> This is an independent community fork. It is not an official release of Iris Keyboard and is not endorsed by the upstream author.
 
 ---
 
-## Overview
+## 🎯 Why this fork exists
 
-Iris keeps the lightweight, low-latency foundation of [Simple Keyboard](https://github.com/rkkr/simple-keyboard) while integrating modern features: Material You dynamic coloring, a clipboard manager, offline and online translation, an optional AI assistant bar, physical mechanical sound packs, and extensive UI personalization.
+Iris already brings a useful foundation: clipboard history, an optional AI toolbar, theming, layout controls, and a compact keyboard. The missing piece for my daily use was a proper typing engine. This fork adds that without turning ordinary typing into an AI/API call.
 
-Iris is completely tracker-free and does not collect personal analytics. Network permissions are strictly optional and only triggered when using online translation, AI endpoints, GIF search, or the soundpack downloader.
+## ⚡ Features
 
----
+### ✍️ SwiftKey-style typing
 
-## Screenshots
+- **Live candidate strip** directly between the existing Iris utility toolbar and the keyboard keys.
+- **Automatic correction** of likely misspellings when Space is pressed. Corrections are conservative: the Android spell-checker must flag a likely typo, and the proposed word must be close to the typed word.
+- **Tap-to-replace** candidates while typing.
+- **Next-word suggestions** based on locally learned word pairs.
+- **Automatic vocabulary learning** after repeated use, plus a custom-word list you can maintain yourself.
+- **Natural backspace behavior:** after an automatic correction inserts a space, Backspace once removes only that space; Backspace again removes the last letter of the corrected word. No separate undo control.
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="33%">
-        <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" alt="Screenshot 1" width="100%" />
-      </td>
-      <td align="center" width="33%">
-        <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" alt="Screenshot 2" width="100%" />
-      </td>
-      <td align="center" width="33%">
-        <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg" alt="Screenshot 3" width="100%" />
-      </td>
-    </tr>
-    <tr>
-      <td align="center" width="33%">
-        <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg" alt="Screenshot 4" width="100%" />
-      </td>
-      <td align="center" width="33%">
-        <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.jpg" alt="Screenshot 5" width="100%" />
-      </td>
-      <td align="center" width="33%">
-        <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.jpg" alt="Screenshot 6" width="100%" />
-      </td>
-    </tr>
-  </table>
-</div>
+### 🧰 Iris features retained
 
----
+- Clipboard history, pinning, search, and the existing clipboard toolbar.
+- AI Copilot and custom OpenAI-compatible endpoints.
+- AMOLED true-black theme and Material You color support.
+- Keyboard height, spacing, key sizing, and layout customization.
+- Translation, GIF/media tools, emoji controls, and mechanical sound options.
 
-## Key Features
+The autocorrect path is separate from AI Copilot. It does not send typing to OpenRouter or another AI API.
 
-- **Material You Dynamic Theming**: Automatically synchronizes keyboard and accent colors with your Android wallpaper (Monet palette on Android 12+, wallpaper extraction on Android 8.1–11, and adaptive palettes on older versions). Includes an AMOLED True Black toggle and manual RGB color picker.
-- **Clipboard History**: Built-in clipboard manager with pinning, instant suggestion bar, search, and batch clearing.
-- **Translation Engine**:
-  - *Offline:* On-device neural machine translation via Google ML Kit (`MlKit` build).
-  - *Online / AI:* Quick web and AI-assisted translation for over 50 languages.
-- **AI Copilot Toolbar**: Optional keyboard assistant capable of grammar correction, tone adjustment, smart compose, and custom prompts via:
-  - Local **Ollama** instances (on-device or LAN)
-  - **Google Gemini** API
-  - Custom **OpenAI-compatible** endpoints (e.g. OpenRouter, DeepSeek, LocalAI)
-- **Mechanical Sound Engine**: Built-in audio synthesizer and downloadable Mechvibes soundpacks (Cherry MX Blue, Brown, Red, Black, Holy Pandas, NK Creams, IBM Model M, Topre, etc.) with custom ZIP import and live scraper.
-- **Layout & Typographic Control**: 55+ keyboard layouts (QWERTY, Dvorak, Colemak, QWERTZ, AZERTY, Arabic, Cyrillic, etc.), 90+ locales, custom key shapes, key size scaling, spacing, height adjustments, and bottom navigation offsets.
-- **GIF & Media Search**: Integrated Tenor, GIPHY, and Klipy GIF browser with custom emoji shortcut management.
-- **Backup & Restore**: Export and import full keyboard settings and dictionary backups via JSON.
+## 🧠 Vocabulary, privacy, and spell-checking
 
----
+- Your custom words, learned words, and word-pair frequencies are stored in the fork's local Android preferences.
+- Custom words are managed in **Settings → Preferences → Autocorrect & Learning → My custom words**. Separate words with commas or line breaks.
+- Repeatedly used words are learned on-device. Word-pair counts are used for next-word predictions.
+- Base spelling candidates come from Android's currently selected spell-checker service through the Android text-services API. The fork itself does not make a network request for autocorrect, but the selected spell-checker is a separate system component and its own privacy/network behavior depends on the device configuration. Choose an on-device spell-checker if you want the entire typing path to remain offline.
+- Suggestions and corrections are suppressed for password, email, URL, and fields that explicitly disable suggestions.
 
-## Downloads
+## 📲 Install alongside the original Iris
 
-APKs are available on [GitHub Releases](https://github.com/MohamadOday/Iris/releases) and [F-Droid](https://f-droid.org/packages/nabu.iris.keyboard/).
+This fork intentionally uses a different Android application ID:
 
-| Variant | Description | Recommended For |
-| :--- | :--- | :--- |
-| **`MlKit`** | Includes Google ML Kit translation libraries. | Users who want fully offline, on-device translation model downloads. |
-| **`NoMlKit`** | Lightweight, 100% open-source build without Google proprietary binaries. | F-Droid users and privacy-focused setups. (Online & AI translation still supported). |
+`pro.pistolwhip.iris.keyboard`
 
----
+The upstream Iris package remains `nabu.iris.keyboard`. Android therefore treats this fork as a separate app: **you do not need to uninstall the original Iris**.
 
-## Building from Source
+The system-visible app name is **Iris Keyboard Pistolwhip'd**, so it is distinguishable in the installer, Settings, launcher, and keyboard list.
 
-### Prerequisites
+1. Download the APK from [GitHub Releases](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases).
+2. Install it normally; it should install beside the original Iris.
+3. Open Android's keyboard settings, enable **Iris Keyboard Pistolwhip'd**, and select it as the active keyboard.
+4. Open the fork's settings and configure **Autocorrect & Learning**.
+
+The first release is a debug-signed sideload build. It is suitable for installation/testing, not a Play Store or production-signed release. A stable release-signing key will be needed if future APKs must update this installation without reinstalling.
+
+## 🛠️ Build from source
+
+### Requirements
+
 - JDK 17
-- Android SDK (API Level 36 / Build-Tools 36.0.0)
+- Android SDK / Build Tools compatible with compile SDK 36
+- The repository's Gradle wrapper
 
-### Commands
+### Build and test
 
-Clone the repository:
 ```bash
-git clone https://github.com/MohamadOday/Iris.git
-cd Iris
+git clone https://github.com/pistolwhip-justin/Iris-Pistolwhip-d.git
+cd Iris-Pistolwhip-d
+./gradlew --no-daemon testNomlkitDebugUnitTest assembleNomlkitDebug
 ```
 
-Build debug APKs:
-```bash
-./gradlew assembleNomlkitDebug  # FOSS variant
-./gradlew assembleMlkitDebug    # ML Kit variant
+The NoMlKit variant avoids the optional proprietary ML Kit translation dependency. The APK is generated under:
+
+`app/build/outputs/apk/nomlkit/debug/`
+
+GitHub Actions performs the reproducible build and publishes versioned APKs to GitHub Releases. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
+
+## 🧭 Project structure
+
+```
+app/
+  src/main/java/nabu/iris/keyboard/
+    latin/
+      AutocorrectBarController.java
+      LatinIME.java
+      RichInputConnection.java
+      inputlogic/InputLogic.java
+  src/main/res/
+    layout/input_view.xml
+    xml/prefs_screen_preferences.xml
+.github/workflows/
+  ci.yml
+  release-6.6.0.yml
+docs/
+  DEVELOPMENT_PLAN.md
+  DECISIONS.md
 ```
 
-Build release APKs:
-```bash
-./gradlew assembleRelease
-```
+## 🤝 Upstream, licensing, and contributions
 
-Generated APKs will be located in `app/build/outputs/apk/`.
+- Upstream Iris Keyboard: [MohamadOday/Iris](https://github.com/MohamadOday/Iris)
+- Original lightweight keyboard foundation: [rkkr/simple-keyboard](https://github.com/rkkr/simple-keyboard)
+- This fork's source and releases: [pistolwhip-justin/Iris-Pistolwhip-d](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d)
+
+The project retains the upstream Apache License 2.0, copyright notices, and third-party acknowledgments. Fork-specific changes do not imply upstream authorship or endorsement.
+
+Bug reports and fork-specific improvements belong in this repository's [Issues](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/issues).
+
+## ⚠️ Known limitations
+
+- Spell-check candidates depend on an enabled Android spell-checker that supports the current language.
+- The first implementation uses conservative word-level corrections on Space; it does not attempt gesture decoding or sentence rewriting.
+- Learned vocabulary and prediction frequencies are local to this fork's app data. They are not automatically imported from the original Iris installation.
+- Physical-device verification is still required for the install confirmation, launcher label, keyboard selection, and real typing behavior.
 
 ---
 
-## Privacy & Network Disclosure
-
-Iris is designed with a privacy-first approach:
-- **No telemetry, trackers, or background data collection.**
-- **Typing data never leaves your device.**
-- Network calls are strictly made only when the user explicitly triggers an external feature (e.g. requesting a GIF, running an AI prompt, or translating text via an online API).
-- All AI and custom API keys are stored securely in local device shared preferences.
-
----
-
-## Contributing & Support
-
-Contributions, bug reports, and layout improvements are welcome.
-- For bug reports or feature requests, open an issue on the [GitHub Issue Tracker](https://github.com/MohamadOday/Iris/issues).
-- For discussion and questions, join the Telegram channel: [@bn3di](https://t.me/bn3di).
-
----
-
-## License
-
-Iris Keyboard is released under the [Apache License 2.0](LICENSE).
-Based on [Simple Keyboard](https://github.com/rkkr/simple-keyboard) by Raimondas Rimkus and the Android Open Source Project (AOSP).
-Third-party notices and licenses are documented in [NOTICE](NOTICE).
+Last updated: 2026-11-22
