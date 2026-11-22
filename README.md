@@ -12,7 +12,7 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 ## 📦 Current release — v6.6.0
 
-<badge color="success">Published</badge>
+**Status:** Published
 
 - [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0)
 - [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.0/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk)
