@@ -292,6 +292,14 @@ public final class RichInputConnection {
                 spacingAndPunctuations);
     }
 
+    /**
+     * Returns the cached text immediately before the cursor.
+     * The cache is maintained by this connection and is bounded by the editor cache size.
+     */
+    public String getTextBeforeCursor() {
+        return mTextBeforeCursor;
+    }
+
     public int getCodePointBeforeCursor() {
         final int length = mTextBeforeCursor.length();
         if (length < 1) return Constants.NOT_A_CODE;
