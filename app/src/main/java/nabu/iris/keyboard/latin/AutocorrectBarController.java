@@ -22,7 +22,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
+import nabu.iris.keyboard.compat.PreferenceManagerCompat;
 import android.view.View;
 import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SpellCheckerSession;
@@ -78,7 +78,7 @@ public final class AutocorrectBarController
     public AutocorrectBarController(Context context, View root,
             CandidateClickListener clickListener, Locale locale) {
         mContext = context.getApplicationContext();
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPreferences = PreferenceManagerCompat.getDeviceSharedPreferences(mContext);
         mStrip = root.findViewById(nabu.iris.keyboard.R.id.autocorrect_suggestion_strip);
         mCandidateViews = new TextView[] {
                 root.findViewById(nabu.iris.keyboard.R.id.autocorrect_candidate_1),
