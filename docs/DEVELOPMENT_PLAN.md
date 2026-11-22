@@ -57,7 +57,7 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 
 ### Phase 3 — Release and device acceptance
 
-**Status:** v6.6.0 is published; physical-device acceptance remains pending.
+**Status:** v6.6.1 is published; physical-device acceptance remains pending.
 
 **Deliverables**
 - Versioned APK release workflow and release notes.
@@ -73,8 +73,39 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 
 - **Original source commit:** `057a1c68d2c0f58c044c2d64ef75fe8cb139e0be` (v6.6.0); v6.6.1 source commit is recorded in its release notes.
 - **Latest release:** [v6.6.1](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1) (prior release: [v6.6.0](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0))
-- **Tag:** `v6.6.0` points to the exact release source commit.
-- **Build/tests:** NoMlKit debug APK built successfully; 8 JUnit tests passed with zero failures/errors.
+- **Tag:** `v6.6.1` points to the exact release source commit `cebe7a0d992c7e05d4b4e74f9269e492bfe8b587`; the v6.6.0 tag remains immutable.
+- **Build/tests:** v6.6.1 NoMlKit debug APK built successfully; 8 JUnit tests passed with zero failures/errors.
 - **Identity:** CI verified package `pro.pistolwhip.iris.keyboard`, label `Iris Keyboard Pistolwhip'd`, and provider authority `pro.pistolwhip.iris.keyboard.gifprovider`.
-- **Artifact:** APK and SHA-256 were retrieved from the successful release workflow artifact; checksum verification passed.
+- **Artifact:** v6.6.1 APK was published with SHA-256 `287fff96fbd41b10ea2b0ea606f980a75c11183249ffbe0a0cde5765d2b52083`.
 - **Not yet verified:** Physical installation beside upstream Iris, keyboard selection, live suggestions/corrections, custom vocabulary behavior, and the two-press backspace sequence on target hardware.
+
+
+### Phase 4 — Expanded emoji library
+
+**Status:** Planned only; implementation has not started. This phase was added after the user identified the current emoji choices as too limited. It is a future development phase, not part of the v6.6.1 release.
+
+**Purpose**
+
+Substantially expand the emoji choices available from the existing Iris keyboard while retaining the current keyboard layout and emoji-selection experience.
+
+**Planned deliverables**
+
+- Inventory the current emoji picker, its source data, and how emoji are inserted into the active editor.
+- Select a maintained, versioned Unicode emoji data source; review its license and attribution requirements before incorporating it.
+- Expand the available catalog substantially while preserving all existing choices and insertion behavior.
+- Check Android/device font support and fallback behavior so unsupported glyphs do not break the picker or text entry.
+- Document the Unicode data version, supported coverage, and any known device compatibility limits.
+
+**Explicit boundaries**
+
+The first pass is catalog expansion, not an assumed picker redesign. Search, categories beyond those already present, recently used items, favorites, skin-tone/gender variants, stickers, and custom emoji are not included as committed requirements. They may be evaluated separately if requested.
+
+**Readiness / acceptance gate**
+
+1. Confirm the current picker/data implementation and agree on the desired breadth of emoji coverage.
+2. Approve the data source and its licensing/attribution.
+3. Verify that existing emoji remain available and that the expanded catalog can be browsed and inserted into normal text fields.
+4. Test rendering on the supported Android/device matrix, documenting glyphs that depend on newer system fonts.
+5. Run automated tests/build checks and update the README with the delivered behavior before the phase is marked complete.
+
+**Start condition:** Do not begin implementation until the current v6.6.1 device-testing feedback is received and the emoji data-source/scope choices are confirmed with the user.

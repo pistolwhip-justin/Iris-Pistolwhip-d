@@ -10,17 +10,17 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 ---
 
-## 📦 Current release — v6.6.0
+## 📦 Current release — v6.6.1
 
 **Status:** Published
 
-- [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0)
-- [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.0/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk)
-- [SHA-256 checksum file](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.0/Iris-Keyboard-Pistolwhipd-v6.6.0-NoMlKit.apk.sha256)
+- [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1)
+- [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.1/Iris-Keyboard-Pistolwhipd-v6.6.1-NoMlKit.apk)
+- [SHA-256 checksum file](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.1/Iris-Keyboard-Pistolwhipd-v6.6.1-NoMlKit.apk.sha256)
 
 **Package:** `pro.pistolwhip.iris.keyboard`  
-**Version code:** `155`  
-**SHA-256:** `1c82ed5e9f286cfdb4f57f1d9ca8d106687e3617feb89c12e6a9774e83bbaac0`
+**Version code:** `156`  
+**SHA-256:** `287fff96fbd41b10ea2b0ea606f980a75c11183249ffbe0a0cde5765d2b52083`
 
 This is a debug-signed sideload build. CI verified the distinct package ID, visible app label, and GIF provider authority. The APK and checksum were downloaded from the release workflow artifact and the checksum passed local verification. Physical-device installation and typing behavior still need a real-device test.
 
@@ -130,6 +130,23 @@ docs/
 The project retains the upstream Apache License 2.0, copyright notices, and third-party acknowledgments. Fork-specific changes do not imply upstream authorship or endorsement.
 
 Bug reports and fork-specific improvements belong in this repository's [Issues](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/issues).
+
+## 🗺️ Planned work
+
+### 😀 Phase 4 — Expanded emoji library
+
+The current emoji selection is limited. A future phase will expand the available emoji choices while preserving the existing Iris keyboard and its current emoji-selection experience.
+
+Planned work:
+- Inventory the existing emoji picker, bundled emoji data, and platform/rendering constraints before choosing an implementation.
+- Expand the selectable emoji catalog substantially, using a maintained Unicode emoji data source with clear versioning and license/attribution review.
+- Preserve all currently available emoji and existing insertion behavior; additions must work in ordinary text fields without disrupting keyboard layout or typing.
+- Verify that newly added emoji render correctly on supported Android versions/devices, including sensible fallback behavior where a glyph is not supported by the device font.
+- Record the Unicode/data version and any device/version limitations in the project documentation.
+
+The first implementation scope is catalog expansion, not a redesign of the emoji UI. Search, favorites, recently used emoji, skin-tone/gender variants, stickers, and custom emoji are not assumed requirements; they can be considered separately if requested.
+
+**Status:** Planned only — no implementation has started. Scope and data-source selection will be confirmed before coding.
 
 ## ⚠️ Known limitations
 
