@@ -81,8 +81,8 @@ jobs:
           test -s "$APK"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           BADGING=$("$AAPT" dump badging "$APK")
-          printf '%s\\n' "$BADGING" | grep -F "package: name='pro.pistolwhip.iris.keyboard' versionCode='155' versionName='6.6.0'"
-          printf '%s\\n' "$BADGING" | grep -F "Iris Keyboard Pistolwhip'd"
+          printf '%s\n' "$BADGING" | grep -F "package: name='pro.pistolwhip.iris.keyboard' versionCode='155' versionName='6.6.0'"
+          printf '%s\n' "$BADGING" | grep -F "Iris Keyboard Pistolwhip'd"
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | grep -F "pro.pistolwhip.iris.keyboard.gifprovider"
 
       - name: Prepare versioned APK and checksum
