@@ -56,7 +56,7 @@ jobs:
             ASSETS=$(gh release view "$TAG" --json assets --jq '.assets[].name')
             if printf '%s\n' "$ASSETS" | grep -Fxq "$APK_NAME"; then
               RELEASE_BODY=$(gh release view "$TAG" --json body --jq '.body')
-              RELEASE_SOURCE_SHA=$(printf '%s\n' "$RELEASE_BODY" | sed -n 's/^\*\*Source commit:\*\* `\([0-9a-f]\{40\}\)`$/\1/p')
+              RELEASE_SOURCE_SHA=$(printf '%s\n' "$RELEASE_BODY" | sed -n 's/^\*\*Source commit:\*\* `\([0-9a-f]\{40\}\)`[[:space:]]*$/\1/p')
               TAG_SHA=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
               if [ -z "$RELEASE_SOURCE_SHA" ] || [ "$TAG_SHA" != "$RELEASE_SOURCE_SHA" ]; then
                 echo "Existing release $TAG has an inconsistent tag/source commit." >&2
