@@ -159,9 +159,11 @@ public final class AutocorrectBarController
         }
         mRequestedWord = word;
         mAutoCorrection = null;
+        int sequence = ++mRequestSequence;
 
         ArrayList<String> candidates = new ArrayList<>();
         candidates.add(word);
+        candidates.addAll(getPrefixCandidates(word));
         if (isKnownWord(word)) {
             showCandidates(candidates);
             return;
@@ -170,7 +172,6 @@ public final class AutocorrectBarController
         showCandidates(candidates);
         if (mSpellCheckerSession != null) {
             try {
-                int sequence = ++mRequestSequence;
                 mSpellCheckerSession.getSentenceSuggestions(
                         new TextInfo[] { new TextInfo(word, 0, sequence) }, 5);
             } catch (RuntimeException ignored) {
@@ -222,7 +223,13 @@ public final class AutocorrectBarController
                     return;
                 }
                 SentenceSuggestionsInfo sentence = results[0];
-                if (sentence.getSuggestionsCount() == 0) return;
+                if (sentence.getSuggestionsCount() == 0) {
+                    ArrayList<String> fallback = new ArrayList<>();
+                    fallback.add(mRequestedWord);
+                    fallback.addAll(getPrefixCandidates(mRequestedWord));
+                    showCandidates(fallback);
+                    return;
+                }
                 SuggestionsInfo suggestions = sentence.getSuggestionsInfoAt(0);
                 if (suggestions == null || suggestions.getSequence() != mRequestSequence) return;
 
@@ -237,6 +244,10 @@ public final class AutocorrectBarController
                         continue;
                     }
                     if (!candidates.contains(suggestion)) candidates.add(suggestion);
+                }
+
+                for (String prefixCandidate : getPrefixCandidates(mRequestedWord)) {
+                    if (!candidates.contains(prefixCandidate)) candidates.add(prefixCandidate);
                 }
 
                 if (mAutoCorrectEnabled
@@ -310,6 +321,44 @@ public final class AutocorrectBarController
         return false;
     }
 
+    private List<String> getPrefixCandidates(String prefix) {
+        ArrayList<String> candidates = new ArrayList<>();
+        String normalizedPrefix = prefix.toLowerCase(Locale.ROOT);
+        Map<String, ?> all = mPreferences.getAll();
+        ArrayList<Map.Entry<String, ?>> matches = new ArrayList<>();
+        for (Map.Entry<String, ?> entry : all.entrySet()) {
+            if (entry.getKey().startsWith(PREF_COUNT_PREFIX)
+                    && entry.getValue() instanceof Integer) {
+                String word = entry.getKey().substring(PREF_COUNT_PREFIX.length());
+                if (word.startsWith(normalizedPrefix) && !word.equals(normalizedPrefix)) {
+                    matches.add(entry);
+                }
+            }
+        }
+        Collections.sort(matches, new Comparator<Map.Entry<String, ?>>() {
+            @Override
+            public int compare(Map.Entry<String, ?> left, Map.Entry<String, ?> right) {
+                return ((Integer) right.getValue()).compareTo((Integer) left.getValue());
+            }
+        });
+        for (Map.Entry<String, ?> entry : matches) {
+            String word = entry.getKey().substring(PREF_COUNT_PREFIX.length());
+            if (!candidates.contains(word)) candidates.add(word);
+            if (candidates.size() == 2) return candidates;
+        }
+
+        Set<String> learned = mPreferences.getStringSet(PREF_LEARNED_WORDS,
+                Collections.<String>emptySet());
+        for (String word : learned) {
+            if (word.startsWith(normalizedPrefix) && !word.equals(normalizedPrefix)
+                    && !candidates.contains(word)) {
+                candidates.add(word);
+            }
+            if (candidates.size() == 2) break;
+        }
+        return candidates;
+    }
+
     private void showCandidates(List<String> candidates) {
         if (mStrip == null) return;
         for (int i = 0; i < mCandidateViews.length; i++) {
@@ -327,6 +376,9 @@ public final class AutocorrectBarController
     }
 
     private void hide() {
+        mRequestSequence++;
+        mRequestedWord = "";
+        mAutoCorrection = null;
         if (mStrip != null) mStrip.setVisibility(View.GONE);
     }
 
