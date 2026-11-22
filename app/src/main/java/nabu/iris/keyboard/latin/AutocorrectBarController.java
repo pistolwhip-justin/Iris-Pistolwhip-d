@@ -382,7 +382,7 @@ public final class AutocorrectBarController
         if (mStrip != null) mStrip.setVisibility(View.GONE);
     }
 
-    private static String lastWord(String text) {
+    static String lastWord(String text) {
         if (text == null || text.isEmpty()) return "";
         int end = text.length();
         int start = end;
@@ -400,7 +400,7 @@ public final class AutocorrectBarController
         return !word.isEmpty() && Character.isUpperCase(word.codePointAt(0));
     }
 
-    private static int editDistance(String left, String right) {
+    static int editDistance(String left, String right) {
         int[] previous = new int[right.length() + 1];
         int[] current = new int[right.length() + 1];
         for (int j = 0; j <= right.length(); j++) previous[j] = j;
