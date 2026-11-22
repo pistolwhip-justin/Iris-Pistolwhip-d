@@ -43,6 +43,6 @@ Before any development session, read its current `DEVELOPMENT_PROTOCOLS.md` and 
 ## Documentation and handoff
 
 - Update the root README alongside every phase.
-- Keep `docs/DEVELOPMENT_PLAN.md` and `docs/DECISIONS.md) consistent with implementation.
+- Keep `docs/DEVELOPMENT_PLAN.md` and `docs/DECISIONS.md consistent with implementation.
 - Review tests, release workflow, and known limitations before calling a phase complete.
 - Do not claim a build, test, install, or release succeeded unless verified from the actual tool/Actions result.
