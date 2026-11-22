@@ -100,6 +100,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private ClipboardHistoryManager mClipboardHistoryManager;
     private ClipboardBarController mClipboardBarController;
     private AutocorrectBarController mAutocorrectBarController;
+    private final AutocorrectBackspaceState mAutocorrectBackspaceState =
+            new AutocorrectBackspaceState();
     private android.content.ClipboardManager.OnPrimaryClipChangedListener mClipboardListener;
 
     public final UIHandler mHandler = new UIHandler(this);
@@ -902,6 +904,32 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
 
+    /** Clears the one-step backspace behavior when the user starts a different edit. */
+    public void clearAutocorrectBackspaceState() {
+        mAutocorrectBackspaceState.clear();
+    }
+
+    /**
+     * Handles the second Backspace after an automatic correction.
+     * The first Backspace is allowed to delete the inserted separator normally.
+     */
+    public boolean handleAutocorrectBackspace() {
+        final AutocorrectBackspaceState.Action action =
+                mAutocorrectBackspaceState.onBackspace(
+                        mInputLogic.mConnection.getTextBeforeCursor(),
+                        mInputLogic.mConnection.hasSelection());
+        if (action != AutocorrectBackspaceState.Action.DELETE_FINAL_CHARACTER) {
+            return false;
+        }
+        final String before = mInputLogic.mConnection.getTextBeforeCursor();
+        if (before == null || before.isEmpty()) {
+            return false;
+        }
+        final int codePoint = before.codePointBefore(before.length());
+        mInputLogic.mConnection.deleteTextBeforeCursor(Character.charCount(codePoint));
+        return true;
+    }
+
     /**
      * Applies a cached high-confidence correction before a separating space is committed.
      * The normal backspace path then removes the inserted space first and edits the word next.
@@ -920,6 +948,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (correction != null && !correction.equalsIgnoreCase(word)) {
             mInputLogic.mConnection.deleteTextBeforeCursor(word.length());
             mInputLogic.mConnection.commitText(correction, 1);
+            mAutocorrectBackspaceState.onCorrectionCommitted(correction);
             mAutocorrectBarController.recordCommittedWord(correction);
         } else {
             mAutocorrectBarController.recordCommittedWord(word);
@@ -927,6 +956,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void applyAutocorrectCandidate(String candidate, boolean isPrediction) {
+        mAutocorrectBackspaceState.clear();
         if (candidate == null || candidate.trim().isEmpty()) return;
         if (!isPrediction) {
             String word = getLastTypedWord(mInputLogic.mConnection.getTextBeforeCursor());
