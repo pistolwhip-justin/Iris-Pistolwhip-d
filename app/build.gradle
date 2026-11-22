@@ -33,4 +33,5 @@ android {
 
 dependencies {
     mlkitImplementation 'com.google.mlkit:translate:17.0.3'
+    testImplementation 'junit:junit:4.13.2'
 }
