@@ -89,6 +89,26 @@ jobs:
         if: steps.guard.outputs.skip != 'true'
         run: ./gradlew --no-daemon testNomlkitDebugUnitTest assembleNomlkitDebug
 
+      - name: Verify unit test report
+        run: |
+          python3 - <<'PY'
+          import glob
+          import sys
+          import xml.etree.ElementTree as ET
+
+          reports = glob.glob("app/build/test-results/testNomlkitDebugUnitTest/TEST-*.xml")
+          if not reports:
+              sys.exit("No JUnit XML report was produced.")
+          totals = {"tests": 0, "failures": 0, "errors": 0, "skipped": 0}
+          for report in reports:
+              root = ET.parse(report).getroot()
+              for key in totals:
+                  totals[key] += int(root.attrib.get(key, 0))
+          print("JUnit results:", totals)
+          if totals["tests"] < 1 or totals["failures"] or totals["errors"]:
+              sys.exit("Unit test verification failed.")
+          PY
+
       - name: Verify APK package, visible label, and provider authority
         if: steps.guard.outputs.skip != 'true'
         run: |
