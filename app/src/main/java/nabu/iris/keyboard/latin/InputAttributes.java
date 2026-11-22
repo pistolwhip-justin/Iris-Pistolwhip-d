@@ -93,7 +93,6 @@ public final class InputAttributes {
         // If it's a browser edit field and auto correct is not ON explicitly, then
         // disable auto correction, but keep suggestions on.
         // If NO_SUGGESTIONS is set, don't do prediction.
-        // If it's not multiline and the autoCorrect flag is not set, then don't correct
         // Match mainstream keyboard behavior: ordinary text fields receive autocorrect
         // unless the app explicitly suppresses suggestions. Browser edit fields retain the
         // platform's explicit opt-in requirement.
