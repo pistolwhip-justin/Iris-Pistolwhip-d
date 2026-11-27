@@ -124,3 +124,16 @@ The first pass is catalog expansion, not an assumed picker redesign. Search, cat
 **CI verification:** Build succeeded; 8 unit tests passed with zero failures/errors; APK package/label/provider checks passed. Release tag `v6.6.2` points to source commit `ed1b2ded164e39b73bbbe9c66d84b5dc0a9ab4f3`. APK SHA-256: `2c2353ab8c05dab7d6c4ca6589c47dfc6c453c6646a526ff4df5d980c411910b`.
 
 **Device acceptance still required:** Verify settings entry from the keyboard toolbar and Android Settings, stable toolbar positioning, candidate tap, Space correction, and normal/backspace typing on device. Physical-device behavior remains unverified until tested.
+
+
+### v6.6.3 — Suggestion visibility and reliable Space correction
+
+**Status:** Source committed; release CI/device validation pending.
+
+- Explicitly set candidate foreground text to the matching light/dark theme text color instead of relying on the keyboard window's Android primary-text attribute.
+- Request a fresh spell-check result when Space is pressed before the asynchronous response for the final typed character arrives.
+- Apply a delayed correction only if the cursor still immediately follows the original word and its space, preventing edits to text the user has continued typing.
+- Permit up to two edit differences for shorter words and three for longer words when the system spell-checker proposes the candidate.
+- Add unit tests for the correction distance policy.
+
+**Acceptance gate:** CI build and tests pass; user verifies candidate text is visible, suggestions are selectable, and corrections occur after Space without altering later typing. Device behavior remains unverified until tested.
