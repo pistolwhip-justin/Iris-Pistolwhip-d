@@ -56,39 +56,10 @@ public class SettingsActivity extends PreferenceActivity {
     private static final String DEFAULT_FRAGMENT = SettingsFragment.class.getName();
     private static final String TAG = SettingsActivity.class.getSimpleName();
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        boolean enabled = false;
-        try {
-            enabled = isInputMethodOfThisImeEnabled();
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in check if input method is enabled", e);
-        }
-
-        if (!enabled) {
-            final Context context = this;
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.setup_message);
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                    dialog.dismiss();
-                }
-            });
-            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    finish();
-                }
-            });
-            builder.setCancelable(false);
-
-            builder.create().show();
-        }
-    }
+    // Settings must remain accessible even before the IME is enabled. Previously
+    // onStart() opened a blocking setup dialog and immediately launched system
+    // input-method settings, which caused Samsung Settings to return to its prior
+    // page instead of showing this activity.
 
     private boolean isInputMethodOfThisImeEnabled() {
         final InputMethodManager imm =
@@ -178,7 +149,10 @@ public class SettingsActivity extends PreferenceActivity {
 
     @Override
     public Intent getIntent() {
-        final Intent intent = super.getIntent();
+        // PreferenceActivity may reuse the launch Intent when Android Settings
+        // reopens this screen. Work on a copy so stale fragment flags from a prior
+        // navigation cannot redirect the activity back to an unrelated settings page.
+        final Intent intent = new Intent(super.getIntent());
         final String fragment = intent.getStringExtra(EXTRA_SHOW_FRAGMENT);
         if (fragment == null) {
             intent.putExtra(EXTRA_NO_HEADERS, true);
