@@ -130,8 +130,11 @@ public final class AutocorrectBarController
             return;
         }
 
+        // Keep the suggestion row's height stable while typing. Hiding it between
+        // words makes the utility toolbar jump vertically on every Space press.
+        if (mStrip != null) mStrip.setVisibility(View.VISIBLE);
         if (textBeforeCursor == null || textBeforeCursor.length() == 0) {
-            hide();
+            showEmptyStrip();
             return;
         }
 
@@ -141,14 +144,14 @@ public final class AutocorrectBarController
             if (previous.length() > 0) {
                 showPredictions(previous);
             } else {
-                hide();
+                showEmptyStrip();
             }
             return;
         }
 
         String word = lastWord(trimmed);
         if (word.length() < 2) {
-            hide();
+            showEmptyStrip();
             return;
         }
 
@@ -205,11 +208,32 @@ public final class AutocorrectBarController
             }
             if (predictions.size() == 3) break;
         }
+
+        // Until a user has enough bigram history, use locally learned frequent
+        // words as useful next-word candidates rather than collapsing the strip.
         if (predictions.isEmpty()) {
-            hide();
-        } else {
-            showCandidates(predictions);
+            ArrayList<Map.Entry<String, ?>> frequent = new ArrayList<>();
+            for (Map.Entry<String, ?> entry : all.entrySet()) {
+                if (entry.getKey().startsWith(PREF_COUNT_PREFIX)
+                        && entry.getValue() instanceof Integer) {
+                    frequent.add(entry);
+                }
+            }
+            Collections.sort(frequent, new Comparator<Map.Entry<String, ?>>() {
+                @Override
+                public int compare(Map.Entry<String, ?> left, Map.Entry<String, ?> right) {
+                    return ((Integer) right.getValue()).compareTo((Integer) left.getValue());
+                }
+            });
+            for (Map.Entry<String, ?> entry : frequent) {
+                String candidate = entry.getKey().substring(PREF_COUNT_PREFIX.length());
+                if (!candidate.equalsIgnoreCase(previousWord) && !predictions.contains(candidate)) {
+                    predictions.add(candidate);
+                }
+                if (predictions.size() == 3) break;
+            }
         }
+        showCandidates(predictions);
     }
 
     @Override
@@ -245,10 +269,10 @@ public final class AutocorrectBarController
                     if (!candidates.contains(prefixCandidate)) candidates.add(prefixCandidate);
                 }
 
-                int typoFlags = SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
-                        | SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS;
+                // Android spell-checkers disagree on which result flags they set. A
+                // high-confidence, close spelling candidate is still suitable for
+                // correction on Space even when those optional flags are absent.
                 if (mAutoCorrectEnabled
-                        && (attributes & typoFlags) != 0
                         && firstSpellSuggestion != null
                         && editDistance(mRequestedWord.toLowerCase(Locale.ROOT),
                                 firstSpellSuggestion.toLowerCase(Locale.ROOT)) <= 2
@@ -370,6 +394,15 @@ public final class AutocorrectBarController
         return candidates;
     }
 
+    private void showEmptyStrip() {
+        if (mStrip == null) return;
+        for (TextView view : mCandidateViews) {
+            view.setText("");
+            view.setVisibility(View.INVISIBLE);
+        }
+        mStrip.setVisibility(View.VISIBLE);
+    }
+
     private void showCandidates(List<String> candidates) {
         if (mStrip == null) return;
         for (int i = 0; i < mCandidateViews.length; i++) {
@@ -383,7 +416,7 @@ public final class AutocorrectBarController
                 view.setVisibility(View.INVISIBLE);
             }
         }
-        mStrip.setVisibility(candidates.isEmpty() ? View.GONE : View.VISIBLE);
+        mStrip.setVisibility(View.VISIBLE);
     }
 
     private void hide() {
