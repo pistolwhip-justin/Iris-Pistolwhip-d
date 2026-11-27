@@ -56,3 +56,11 @@
 **Decision:** Keep the autocorrect row at a stable height during ordinary typing, populate next-word candidates from local history when available, and accept close Android spell-checker candidates for conservative Space correction even when the spell-checker omits optional recommendation flags. Settings launches use a simple new-task intent; the settings activity no longer blocks access by redirecting users to system IME settings before showing preferences.  
 **Reason:** The v6.6.1 device feedback identified toolbar movement, unreliable Space correction, and settings navigation failures on Samsung Android.  
 **Status:** Implemented in v6.6.2 source; CI and device validation pending.
+
+
+## ADR-009 — Visible candidates and asynchronous Space autocorrect
+
+**Date:** 2026-11-27  
+**Decision:** Use explicit theme foreground colors for candidate text. When Space arrives before the Android spell-checker response, request a fresh correction and apply it after the separator only if the editor still ends with that exact word and space. Allow a slightly wider edit distance for longer spell-checker-proposed words.  
+**Reason:** v6.6.2 feedback confirmed that candidate text blended into the strip background and that cached asynchronous results were not reliably available at Space time.  
+**Status:** Implemented in v6.6.3 source; CI and physical-device validation pending.
