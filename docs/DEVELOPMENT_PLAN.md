@@ -3,7 +3,7 @@
 **Project:** Iris Keyboard Pistolwhip'd  
 **Baseline:** Upstream Iris Keyboard 6.5.3 / versionCode 154  
 **Target first fork release:** 6.6.0 / versionCode 155  
-**Last updated:** 2026-11-22
+**Last updated:** 2026-11-27
 
 ## Purpose
 
@@ -72,7 +72,7 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 ## Current implementation status
 
 - **Original source commit:** `057a1c68d2c0f58c044c2d64ef75fe8cb139e0be` (v6.6.0); v6.6.1 source commit is recorded in its release notes.
-- **Latest release:** [v6.6.1](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1) (prior release: [v6.6.0](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0))
+- **Latest prior release:** [v6.6.1](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1) (prior release: [v6.6.0](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0))
 - **Tag:** `v6.6.1` points to the exact release source commit `cebe7a0d992c7e05d4b4e74f9269e492bfe8b587`; the v6.6.0 tag remains immutable.
 - **Build/tests:** v6.6.1 NoMlKit debug APK built successfully; 8 JUnit tests passed with zero failures/errors.
 - **Identity:** CI verified package `pro.pistolwhip.iris.keyboard`, label `Iris Keyboard Pistolwhip'd`, and provider authority `pro.pistolwhip.iris.keyboard.gifprovider`.
@@ -109,3 +109,16 @@ The first pass is catalog expansion, not an assumed picker redesign. Search, cat
 5. Run automated tests/build checks and update the README with the delivered behavior before the phase is marked complete.
 
 **Start condition:** Do not begin implementation until the current v6.6.1 device-testing feedback is received and the emoji data-source/scope choices are confirmed with the user.
+
+
+### v6.6.2 — Device feedback fixes
+
+**Status:** Source changes committed; release CI/device acceptance pending.
+
+- Remove the blocking setup redirect from SettingsActivity so preferences remain accessible before the keyboard is enabled.
+- Launch Settings from the keyboard with a simple new-task intent to avoid problematic task-stack flags on Samsung devices.
+- Keep the candidate strip visible at a fixed 40dp height during ordinary typing; show next-word candidates from local bigram history or learned frequent words when available.
+- Accept close spell-check candidates for conservative Space autocorrection even if the selected spell-checker omits optional typo/recommendation flags.
+- Apply a theme background to the suggestion strip so it visually sits with the utility toolbar.
+
+**Acceptance gate:** CI build and unit tests pass; user verifies settings entry from the keyboard toolbar and Android Settings, stable toolbar positioning, candidate tap, Space correction, and normal/backspace typing on device. Physical-device behavior remains unverified until tested.
