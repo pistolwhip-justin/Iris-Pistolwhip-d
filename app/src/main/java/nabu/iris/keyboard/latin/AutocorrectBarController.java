@@ -52,6 +52,10 @@ public final class AutocorrectBarController
         void onCandidateSelected(String candidate, boolean isPrediction);
     }
 
+    public interface AutoCorrectionCallback {
+        void onCorrection(String originalWord, String correction);
+    }
+
     private static final String PREF_AUTOCORRECT_ENABLED = "pref_autocorrect_enabled";
     private static final String PREF_LEARNING_ENABLED = "pref_autocorrect_learning_enabled";
     private static final String PREF_CUSTOM_WORDS = "pref_autocorrect_custom_words";
@@ -73,6 +77,9 @@ public final class AutocorrectBarController
     private boolean mPredictionMode;
     private String mPreviousCommittedWord = "";
     private int mRequestSequence;
+    private String mPendingCorrectionWord;
+    private int mPendingCorrectionSequence;
+    private AutoCorrectionCallback mPendingCorrectionCallback;
 
     public AutocorrectBarController(Context context, View root,
             CandidateClickListener clickListener, Locale locale) {
@@ -241,19 +248,39 @@ public final class AutocorrectBarController
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (results == null || results.length == 0 || results[0] == null
-                        || mPredictionMode || mRequestedWord.isEmpty()) {
+                if (results == null || results.length == 0 || results[0] == null) {
+                    completePendingCorrection(null);
                     return;
                 }
                 SentenceSuggestionsInfo sentence = results[0];
-                if (sentence.getSuggestionsCount() == 0) return;
+                if (sentence.getSuggestionsCount() == 0) {
+                    completePendingCorrection(null);
+                    return;
+                }
                 SuggestionsInfo suggestions = sentence.getSuggestionsInfoAt(0);
-                if (suggestions == null || suggestions.getSequence() != mRequestSequence) return;
+                if (suggestions == null) {
+                    completePendingCorrection(null);
+                    return;
+                }
+
+                // A Space key can arrive before the asynchronous spell-check result.
+                // Resolve that just-completed word independently of the live toolbar
+                // request, which may already have switched to next-word prediction.
+                if (mPendingCorrectionCallback != null
+                        && suggestions.getSequence() == mPendingCorrectionSequence) {
+                    String pendingWord = mPendingCorrectionWord;
+                    String pendingCorrection = firstUsableSpellSuggestion(suggestions, pendingWord);
+                    completePendingCorrection(pendingCorrection);
+                }
+
+                if (mPredictionMode || mRequestedWord.isEmpty()
+                        || suggestions.getSequence() != mRequestSequence) {
+                    return;
+                }
 
                 ArrayList<String> candidates = new ArrayList<>();
                 candidates.add(mRequestedWord);
                 String firstSpellSuggestion = null;
-                int attributes = suggestions.getSuggestionsAttributes();
                 for (int i = 0; i < suggestions.getSuggestionsCount(); i++) {
                     String suggestion = suggestions.getSuggestionAt(i);
                     if (suggestion == null || suggestion.trim().isEmpty()
@@ -275,7 +302,8 @@ public final class AutocorrectBarController
                 if (mAutoCorrectEnabled
                         && firstSpellSuggestion != null
                         && editDistance(mRequestedWord.toLowerCase(Locale.ROOT),
-                                firstSpellSuggestion.toLowerCase(Locale.ROOT)) <= 2
+                                firstSpellSuggestion.toLowerCase(Locale.ROOT))
+                                <= maximumCorrectionDistance(mRequestedWord)
                         && !startsWithUppercase(mRequestedWord)) {
                     mAutoCorrection = firstSpellSuggestion;
                 } else {
@@ -289,6 +317,60 @@ public final class AutocorrectBarController
     @Override
     public void onGetSuggestions(SuggestionsInfo[] results) {
         // Sentence suggestions are used so that candidate offsets remain available.
+    }
+
+    /**
+     * Requests a fresh spell-check result for a word whose Space key was already
+     * pressed. Android spell-checkers respond asynchronously, so the caller must
+     * verify the editor still ends with the original word and separator.
+     */
+    public void requestCorrection(String word, AutoCorrectionCallback callback) {
+        if (callback == null) return;
+        if (mSpellCheckerSession == null || word == null || word.isEmpty()
+                || !mAutoCorrectEnabled) {
+            callback.onCorrection(word, null);
+            return;
+        }
+        mPendingCorrectionWord = word;
+        mPendingCorrectionCallback = callback;
+        mPendingCorrectionSequence = ++mRequestSequence;
+        try {
+            mSpellCheckerSession.getSentenceSuggestions(
+                    new TextInfo[] { new TextInfo(word, 0, mPendingCorrectionSequence) }, 5);
+        } catch (RuntimeException ignored) {
+            completePendingCorrection(null);
+        }
+    }
+
+    private String firstUsableSpellSuggestion(SuggestionsInfo suggestions, String word) {
+        if (suggestions == null || word == null || word.isEmpty()) return null;
+        for (int i = 0; i < suggestions.getSuggestionsCount(); i++) {
+            String candidate = suggestions.getSuggestionAt(i);
+            if (candidate == null || candidate.trim().isEmpty()
+                    || candidate.equalsIgnoreCase(word) || isKnownWord(candidate)) {
+                continue;
+            }
+            if (editDistance(word.toLowerCase(Locale.ROOT),
+                    candidate.toLowerCase(Locale.ROOT)) <= maximumCorrectionDistance(word)
+                    && !startsWithUppercase(word)) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    private void completePendingCorrection(String correction) {
+        AutoCorrectionCallback callback = mPendingCorrectionCallback;
+        String word = mPendingCorrectionWord;
+        mPendingCorrectionCallback = null;
+        mPendingCorrectionWord = null;
+        mPendingCorrectionSequence = 0;
+        if (callback != null) callback.onCorrection(word, correction);
+    }
+
+    private static int maximumCorrectionDistance(String word) {
+        if (word == null) return 0;
+        return word.length() >= 8 ? 3 : word.length() >= 5 ? 2 : 1;
     }
 
     public String getAutoCorrection(String word) {
