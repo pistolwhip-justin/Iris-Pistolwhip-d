@@ -162,7 +162,8 @@
             android:layout_height="40dp"
             android:orientation="horizontal"
             android:gravity="center"
-            android:visibility="gone"
+            android:visibility="visible"
+            android:background="?attr/colorBackground"
             android:paddingStart="8dp"
             android:paddingEnd="8dp">
 
