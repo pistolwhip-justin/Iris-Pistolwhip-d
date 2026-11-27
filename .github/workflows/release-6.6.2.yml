@@ -73,7 +73,8 @@ jobs:
             if [ "$TAG_SHA" != "$GITHUB_SHA" ]; then
               # The initial v6.6.2 attempt created a tag before its stale versionCode
               # assertion stopped the release. Recover only that exact unpublished tag.
-              if [ "$TAG_SHA" != "6dd7653ca288d74e3513c39bad90a31b0fa37594" ] \
+              if { [ "$TAG_SHA" != "6dd7653ca288d74e3513c39bad90a31b0fa37594" ] \
+                    && [ "$TAG_SHA" != "092680856ea3279549b9ec537dd8ae31dd7828cd" ]; } \
                   || gh release view "$TAG" >/dev/null 2>&1; then
                 echo "Tag $TAG already points to unexpected source $TAG_SHA; refusing to replace." >&2
                 exit 1
@@ -168,10 +169,11 @@ jobs:
           cat > release-notes.md <<EOF
           ## Iris Keyboard Pistolwhip'd v6.6.2
 
-          - Refines the automatic-correction Backspace sequence: first press removes the inserted space; second press removes the final character of the corrected word without restoring the original spelling.
-          - Retains conservative autocorrect on Space, tap-to-replace candidates, local vocabulary learning, and next-word predictions.
-          - Adds a manually editable custom-word list.
-          - Uses a distinct Android application ID so it installs beside upstream Iris.
+          - Fixes Settings access from the keyboard toolbar and Android Settings by removing problematic task-stack flags and the blocking setup redirect.
+          - Keeps the suggestion strip at a stable height during typing so the utility toolbar no longer jumps after Space.
+          - Shows locally learned next-word suggestions after Space when available and keeps the row stable when no candidate is available yet.
+          - Improves conservative Space autocorrection by accepting close spell-check candidates even when the selected Android spell-checker omits optional recommendation flags.
+          - Matches the suggestion strip to the settings/keyboard surface theme; retains candidate tap-to-replace, local vocabulary learning, and existing backspace behavior.
 
           **Install type:** Debug-signed sideload APK (not a Play Store or production-signed release).  
           **Package:** pro.pistolwhip.iris.keyboard
