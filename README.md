@@ -12,7 +12,7 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 ## 📦 Current release — v6.6.2
 
-**Status:** Release workflow pending verification
+**Status:** Published — CI build and release checks passed
 
 - [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.2)
 - [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.2/Iris-Keyboard-Pistolwhipd-v6.6.2-NoMlKit.apk)
@@ -20,9 +20,11 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 **Package:** `pro.pistolwhip.iris.keyboard`  
 **Version code:** `157`  
-**SHA-256:** pending release workflow
+**SHA-256:** `2c2353ab8c05dab7d6c4ca6589c47dfc6c453c6646a526ff4df5d980c411910b`  
+**Source commit:** `ed1b2ded164e39b73bbbe9c66d84b5dc0a9ab4f3`  
+**Automated tests:** 8 passed, 0 failures/errors
 
-v6.6.2 addresses settings navigation, stable suggestion-strip layout, and Space autocorrection based on device feedback. This is a debug-signed sideload build. CI and physical-device validation are reported separately; verify the release notes before installing.
+v6.6.2 addresses settings navigation, stable suggestion-strip layout, and Space autocorrection based on device feedback. The APK was downloaded from the workflow artifact and its SHA-256 matches the published release asset metadata. This is a debug-signed sideload build. Physical-device installation and behavior remain unverified.
 
 ---
 
@@ -35,7 +37,7 @@ Iris already brings a useful foundation: clipboard history, an optional AI toolb
 ### ✍️ SwiftKey-style typing
 
 - **Live candidate strip** directly between the existing Iris utility toolbar and the keyboard keys.
-- **Automatic correction** of likely misspellings when Space is pressed. Corrections are conservative: the Android spell-checker must flag a likely typo, and the proposed word must be close to the typed word.
+- **Automatic correction** of likely misspellings when Space is pressed. Corrections are conservative: the Android spell-checker must return a close candidate (edit distance ≤ 2), and the typed word must not begin with an uppercase letter.
 - **Tap-to-replace** candidates while typing.
 - **Next-word suggestions** based on locally learned word pairs.
 - **Automatic vocabulary learning** after repeated use, plus a custom-word list you can maintain yourself.
