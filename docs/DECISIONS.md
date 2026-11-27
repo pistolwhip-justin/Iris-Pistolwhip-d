@@ -48,3 +48,11 @@
 **Decision:** The manifest provider authority uses the `${applicationId}` placeholder, and GIF content URIs use `Context.getPackageName()`.  
 **Reason:** A separate application ID alone is not enough if a content-provider authority remains hard-coded to upstream; both apps must be able to coexist without provider collisions.  
 **Status:** Accepted.
+
+
+## ADR-008 — Stable suggestion strip and settings task launch
+
+**Date:** 2026-11-27  
+**Decision:** Keep the autocorrect row at a stable height during ordinary typing, populate next-word candidates from local history when available, and accept close Android spell-checker candidates for conservative Space correction even when the spell-checker omits optional recommendation flags. Settings launches use a simple new-task intent; the settings activity no longer blocks access by redirecting users to system IME settings before showing preferences.  
+**Reason:** The v6.6.1 device feedback identified toolbar movement, unreliable Space correction, and settings navigation failures on Samsung Android.  
+**Status:** Implemented in v6.6.2 source; CI and device validation pending.
