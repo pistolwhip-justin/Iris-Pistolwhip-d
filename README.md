@@ -12,7 +12,7 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 ## 📦 Current release — v6.6.3
 
-**Status:** Release workflow running; verification pending
+**Status:** Published — CI build and release checks passed
 
 - [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.3)
 - [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.3/Iris-Keyboard-Pistolwhipd-v6.6.3-NoMlKit.apk)
@@ -20,11 +20,11 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 **Package:** `pro.pistolwhip.iris.keyboard`  
 **Version code:** `158`  
-**SHA-256:** pending CI  
-**Source commit:** pending CI  
-**Automated tests:** pending CI
+**SHA-256:** `dd2f0cebf05da8792f52e8c93600b3289fac91924932b5a447aad3c1abceba67`  
+**Source commit:** `1b5c49272c23939a8bc531bfbe67ff7236481fee`  
+**Automated tests:** 10 passed, 0 failures/errors
 
-v6.6.3 addresses invisible candidate text and delayed spell-check responses that could miss a Space press. It also permits up to three edit differences for longer words when the system spell-checker supplies a candidate. This is a debug-signed sideload build. Physical-device installation and behavior remain unverified.
+v6.6.3 addresses invisible candidate text and delayed spell-check responses that could miss a Space press. It also permits up to three edit differences for longer words when the system spell-checker supplies a candidate. CI verified the APK and checksum; physical-device installation and behavior remain unverified.
 
 ---
 
