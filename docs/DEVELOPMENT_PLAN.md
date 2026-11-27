@@ -72,7 +72,7 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 ## Current implementation status
 
 - **Original source commit:** `057a1c68d2c0f58c044c2d64ef75fe8cb139e0be` (v6.6.0); v6.6.1 source commit is recorded in its release notes.
-- **Latest prior release:** [v6.6.1](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1) (prior release: [v6.6.0](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.0))
+- **Latest release:** [v6.6.2](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.2) (previous release: [v6.6.1](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1))
 - **Tag:** `v6.6.1` points to the exact release source commit `cebe7a0d992c7e05d4b4e74f9269e492bfe8b587`; the v6.6.0 tag remains immutable.
 - **Build/tests:** v6.6.1 NoMlKit debug APK built successfully; 8 JUnit tests passed with zero failures/errors.
 - **Identity:** CI verified package `pro.pistolwhip.iris.keyboard`, label `Iris Keyboard Pistolwhip'd`, and provider authority `pro.pistolwhip.iris.keyboard.gifprovider`.
@@ -113,7 +113,7 @@ The first pass is catalog expansion, not an assumed picker redesign. Search, cat
 
 ### v6.6.2 — Device feedback fixes
 
-**Status:** Source changes committed; release CI/device acceptance pending.
+**Status:** Published; CI build and automated tests passed. Physical-device acceptance remains pending.
 
 - Remove the blocking setup redirect from SettingsActivity so preferences remain accessible before the keyboard is enabled.
 - Launch Settings from the keyboard with a simple new-task intent to avoid problematic task-stack flags on Samsung devices.
@@ -121,4 +121,6 @@ The first pass is catalog expansion, not an assumed picker redesign. Search, cat
 - Accept close spell-check candidates for conservative Space autocorrection even if the selected spell-checker omits optional typo/recommendation flags.
 - Apply a theme background to the suggestion strip so it visually sits with the utility toolbar.
 
-**Acceptance gate:** CI build and unit tests pass; user verifies settings entry from the keyboard toolbar and Android Settings, stable toolbar positioning, candidate tap, Space correction, and normal/backspace typing on device. Physical-device behavior remains unverified until tested.
+**CI verification:** Build succeeded; 8 unit tests passed with zero failures/errors; APK package/label/provider checks passed. Release tag `v6.6.2` points to source commit `ed1b2ded164e39b73bbbe9c66d84b5dc0a9ab4f3`. APK SHA-256: `2c2353ab8c05dab7d6c4ca6589c47dfc6c453c6646a526ff4df5d980c411910b`.
+
+**Device acceptance still required:** Verify settings entry from the keyboard toolbar and Android Settings, stable toolbar positioning, candidate tap, Space correction, and normal/backspace typing on device. Physical-device behavior remains unverified until tested.
