@@ -1104,9 +1104,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final Intent intent = new Intent();
         intent.setClass(LatinIME.this, SettingsActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // Launch Settings as a normal new-task activity. RESET_TASK_IF_NEEDED
+        // and CLEAR_TOP caused task-stack reuse on some Samsung builds, where the
+        // settings screen was dismissed or returned to the previous Settings page.
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
