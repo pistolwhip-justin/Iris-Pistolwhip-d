@@ -169,11 +169,11 @@ jobs:
           cat > release-notes.md <<EOF
           ## Iris Keyboard Pistolwhip'd v6.6.3
 
-          - Fixes Settings access from the keyboard toolbar and Android Settings by removing problematic task-stack flags and the blocking setup redirect.
-          - Keeps the suggestion strip at a stable height during typing so the utility toolbar no longer jumps after Space.
-          - Shows locally learned next-word suggestions after Space when available and keeps the row stable when no candidate is available yet.
-          - Improves conservative Space autocorrection by accepting close spell-check candidates even when the selected Android spell-checker omits optional recommendation flags.
-          - Matches the suggestion strip to the settings/keyboard surface theme; retains candidate tap-to-replace, local vocabulary learning, and existing backspace behavior.
+          - Sets explicit light/dark theme foreground colors for candidate text so suggestions remain readable against the strip background.
+          - Requests a fresh spell-check result when Space is pressed before the final keystroke's asynchronous result arrives; applies a delayed correction only if the cursor still follows the original word and separator.
+          - Allows up to two edit differences for shorter words and three for longer words when the system spell-checker supplies a candidate.
+          - Adds unit coverage for the correction-distance policy.
+          - Retains the stable suggestion-strip height, Settings navigation fixes, candidate tap-to-replace, local vocabulary learning, and existing backspace behavior.
 
           **Install type:** Debug-signed sideload APK (not a Play Store or production-signed release).  
           **Package:** pro.pistolwhip.iris.keyboard
