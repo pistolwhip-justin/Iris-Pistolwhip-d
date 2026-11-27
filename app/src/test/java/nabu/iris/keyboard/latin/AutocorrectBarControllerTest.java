@@ -40,4 +40,15 @@ public class AutocorrectBarControllerTest {
     public void editDistanceReturnsZeroForIdenticalWords() {
         assertEquals(0, AutocorrectBarController.editDistance("keyboard", "keyboard"));
     }
+
+    @Test
+    public void autocorrectAllowsTwoEditCorrectionsForShortWords() {
+        assertEquals(2, AutocorrectBarController.maximumCorrectionDistance("wht"));
+        assertEquals(2, AutocorrectBarController.maximumCorrectionDistance("correct"));
+    }
+
+    @Test
+    public void autocorrectAllowsThreeEditCorrectionsForLongWords() {
+        assertEquals(3, AutocorrectBarController.maximumCorrectionDistance("populstex"));
+    }
 }
