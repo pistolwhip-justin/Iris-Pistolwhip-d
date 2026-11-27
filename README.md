@@ -10,21 +10,21 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 ---
 
-## 📦 Current release — v6.6.2
+## 📦 Current release — v6.6.3
 
-**Status:** Published — CI build and release checks passed
+**Status:** Release workflow running; verification pending
 
-- [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.2)
-- [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.2/Iris-Keyboard-Pistolwhipd-v6.6.2-NoMlKit.apk)
-- [SHA-256 checksum file](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.2/Iris-Keyboard-Pistolwhipd-v6.6.2-NoMlKit.apk.sha256)
+- [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.3)
+- [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.3/Iris-Keyboard-Pistolwhipd-v6.6.3-NoMlKit.apk)
+- [SHA-256 checksum file](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.3/Iris-Keyboard-Pistolwhipd-v6.6.3-NoMlKit.apk.sha256)
 
 **Package:** `pro.pistolwhip.iris.keyboard`  
-**Version code:** `157`  
-**SHA-256:** `2c2353ab8c05dab7d6c4ca6589c47dfc6c453c6646a526ff4df5d980c411910b`  
-**Source commit:** `ed1b2ded164e39b73bbbe9c66d84b5dc0a9ab4f3`  
-**Automated tests:** 8 passed, 0 failures/errors
+**Version code:** `158`  
+**SHA-256:** pending CI  
+**Source commit:** pending CI  
+**Automated tests:** pending CI
 
-v6.6.2 addresses settings navigation, stable suggestion-strip layout, and Space autocorrection based on device feedback. The APK was downloaded from the workflow artifact and its SHA-256 matches the published release asset metadata. This is a debug-signed sideload build. Physical-device installation and behavior remain unverified.
+v6.6.3 addresses invisible candidate text and delayed spell-check responses that could miss a Space press. It also permits up to three edit differences for longer words when the system spell-checker supplies a candidate. This is a debug-signed sideload build. Physical-device installation and behavior remain unverified.
 
 ---
 
@@ -76,7 +76,7 @@ The system-visible app name is **Iris Keyboard Pistolwhip'd**, so it is distingu
 3. Open Android's keyboard settings, enable **Iris Keyboard Pistolwhip'd**, and select it as the active keyboard.
 4. Open the fork's settings and configure **Autocorrect & Learning**.
 
-The v6.6.1 release is a debug-signed sideload build. It is intended for installation/testing, not a Play Store or production-signed release. A stable release-signing key will be needed if future APKs must update this installation without reinstalling.
+The current release is a debug-signed sideload build. It is intended for installation/testing, not a Play Store or production-signed release. A stable release-signing key will be needed if future APKs must update this installation without reinstalling.
 
 ## 🛠️ Build from source
 
@@ -98,7 +98,7 @@ The NoMlKit variant avoids the optional proprietary ML Kit translation dependenc
 
 `app/build/outputs/apk/nomlkit/debug/`
 
-The version-specific GitHub Actions workflow creates a version tag on the exact `main` commit, builds the APK, and publishes immutable GitHub Release assets. v6.6.0 and v6.6.1 are published; future releases use their own version-specific workflow and tag. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
+The version-specific GitHub Actions workflow creates a version tag on the exact `main` commit, builds the APK, and publishes immutable GitHub Release assets. v6.6.0, v6.6.1, and v6.6.2 are published; v6.6.3 uses its own version-specific workflow and tag. Release workflows and APK filenames are version-specific; prior releases are not overwritten.
 
 ## 🧭 Project structure
 
