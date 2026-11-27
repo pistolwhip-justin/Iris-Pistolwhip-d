@@ -952,6 +952,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mAutocorrectBarController.recordCommittedWord(correction);
         } else {
             mAutocorrectBarController.recordCommittedWord(word);
+            // The spell-checker may still be processing the final keystroke when
+            // Space is pressed. Request a fresh result and apply it after Space only
+            // if the cursor has not moved on to another word.
+            mAutocorrectBarController.requestCorrection(word,
+                    new AutocorrectBarController.AutoCorrectionCallback() {
+                @Override
+                public void onCorrection(String originalWord, String delayedCorrection) {
+                    if (delayedCorrection == null || originalWord == null
+                            || delayedCorrection.equalsIgnoreCase(originalWord)) {
+                        return;
+                    }
+                    String beforeCursor = mInputLogic.mConnection.getTextBeforeCursor();
+                    if (beforeCursor == null || !beforeCursor.endsWith(originalWord + " ")) {
+                        return;
+                    }
+                    mInputLogic.mConnection.deleteTextBeforeCursor(originalWord.length() + 1);
+                    mInputLogic.mConnection.commitText(delayedCorrection + " ", 1);
+                    mAutocorrectBackspaceState.onCorrectionCommitted(delayedCorrection);
+                    mAutocorrectBarController.recordCommittedWord(delayedCorrection);
+                    refreshAutocorrectSuggestions();
+                }
+            });
         }
     }
 
