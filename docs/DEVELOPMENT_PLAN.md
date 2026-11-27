@@ -72,7 +72,7 @@ Add Microsoft SwiftKey-like word suggestions, conservative automatic correction,
 ## Current implementation status
 
 - **Original source commit:** `057a1c68d2c0f58c044c2d64ef75fe8cb139e0be` (v6.6.0); v6.6.1 source commit is recorded in its release notes.
-- **Latest release:** [v6.6.2](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.2) (previous release: [v6.6.1](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1))
+- **Latest release:** [v6.6.3](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.3) (previous release: [v6.6.2](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.2))
 - **Tag:** `v6.6.1` points to the exact release source commit `cebe7a0d992c7e05d4b4e74f9269e492bfe8b587`; the v6.6.0 tag remains immutable.
 - **Build/tests:** v6.6.1 NoMlKit debug APK built successfully; 8 JUnit tests passed with zero failures/errors.
 - **Identity:** CI verified package `pro.pistolwhip.iris.keyboard`, label `Iris Keyboard Pistolwhip'd`, and provider authority `pro.pistolwhip.iris.keyboard.gifprovider`.
@@ -128,7 +128,7 @@ The first pass is catalog expansion, not an assumed picker redesign. Search, cat
 
 ### v6.6.3 — Suggestion visibility and reliable Space correction
 
-**Status:** Source committed; release CI/device validation pending.
+**Status:** Published; CI build and tests passed. Physical-device acceptance remains pending.
 
 - Explicitly set candidate foreground text to the matching light/dark theme text color instead of relying on the keyboard window's Android primary-text attribute.
 - Request a fresh spell-check result when Space is pressed before the asynchronous response for the final typed character arrives.
@@ -136,4 +136,6 @@ The first pass is catalog expansion, not an assumed picker redesign. Search, cat
 - Permit up to two edit differences for shorter words and three for longer words when the system spell-checker proposes the candidate.
 - Add unit tests for the correction distance policy.
 
-**Acceptance gate:** CI build and tests pass; user verifies candidate text is visible, suggestions are selectable, and corrections occur after Space without altering later typing. Device behavior remains unverified until tested.
+**CI verification:** Build succeeded; 10 unit tests passed with zero failures/errors; APK identity checks passed. Release tag `v6.6.3` points to source commit `1b5c49272c23939a8bc531bfbe67ff7236481fee`. APK SHA-256: `dd2f0cebf05da8792f52e8c93600b3289fac91924932b5a447aad3c1abceba67`.
+
+**Device acceptance still required:** Verify candidate text is visible, suggestions are selectable, and corrections occur after Space without altering later typing. Device behavior remains unverified until tested.
