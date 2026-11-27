@@ -10,19 +10,19 @@ The immediate mission: make autocorrect actually behave like a keyboard should. 
 
 ---
 
-## 📦 Current release — v6.6.1
+## 📦 Current release — v6.6.2
 
-**Status:** Published
+**Status:** Release workflow pending verification
 
-- [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.1)
-- [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.1/Iris-Keyboard-Pistolwhipd-v6.6.1-NoMlKit.apk)
-- [SHA-256 checksum file](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.1/Iris-Keyboard-Pistolwhipd-v6.6.1-NoMlKit.apk.sha256)
+- [GitHub Release page](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/tag/v6.6.2)
+- [Direct APK download](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.2/Iris-Keyboard-Pistolwhipd-v6.6.2-NoMlKit.apk)
+- [SHA-256 checksum file](https://github.com/pistolwhip-justin/Iris-Pistolwhip-d/releases/download/v6.6.2/Iris-Keyboard-Pistolwhipd-v6.6.2-NoMlKit.apk.sha256)
 
 **Package:** `pro.pistolwhip.iris.keyboard`  
-**Version code:** `156`  
-**SHA-256:** `287fff96fbd41b10ea2b0ea606f980a75c11183249ffbe0a0cde5765d2b52083`
+**Version code:** `157`  
+**SHA-256:** pending release workflow
 
-This is a debug-signed sideload build. CI verified the distinct package ID, visible app label, and GIF provider authority. The APK and checksum were downloaded from the release workflow artifact and the checksum passed local verification. Physical-device installation and typing behavior still need a real-device test.
+v6.6.2 addresses settings navigation, stable suggestion-strip layout, and Space autocorrection based on device feedback. This is a debug-signed sideload build. CI and physical-device validation are reported separately; verify the release notes before installing.
 
 ---
 
@@ -157,4 +157,4 @@ The first implementation scope is catalog expansion, not a redesign of the emoji
 
 ---
 
-Last updated: 2026-11-22
+Last updated: 2026-11-27
