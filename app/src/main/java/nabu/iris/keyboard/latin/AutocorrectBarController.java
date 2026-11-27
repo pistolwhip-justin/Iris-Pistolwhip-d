@@ -368,9 +368,9 @@ public final class AutocorrectBarController
         if (callback != null) callback.onCorrection(word, correction);
     }
 
-    private static int maximumCorrectionDistance(String word) {
+    static int maximumCorrectionDistance(String word) {
         if (word == null) return 0;
-        return word.length() >= 8 ? 3 : word.length() >= 5 ? 2 : 1;
+        return word.length() >= 8 ? 3 : 2;
     }
 
     public String getAutoCorrection(String word) {
